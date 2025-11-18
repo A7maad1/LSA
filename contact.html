@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اتصل بنا - ثانوية صلاح الدين الأيوبي</title>
+    <link rel="stylesheet" href="../css/styles-dynamic.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- NAVIGATION HEADER -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo-section">
+                <img src="assets/logo.png" alt="شعار المدرسة" class="school-logo">
+                <div class="school-info">
+                    <h2>ثانوية صلاح الدين الأيوبي</h2>
+                    <p>حي الفداء – الدار البيضاء</p>
+                </div>
+            </div>
+            
+            <nav class="navbar">
+                <button class="menu-toggle">☰</button>
+                <ul class="nav-menu">
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="activities.html">الأنشطة</a></li>
+                    <li><a href="announcements.html">الإعلانات</a></li>
+                    <li><a href="meetings.html">الاجتماعات</a></li>
+                    <li><a href="holidays.html">العطل</a></li>
+                    <li><a href="contact.html" class="active">اتصل بنا</a></li>
+                    <li><a href="login.html" class="admin-link">لوحة الإدارة</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- PAGE HEADER -->
+    <section class="page-header">
+        <div class="container">
+            <h1>اتصل بنا</h1>
+            <p>تواصل معنا لأي استفسار أو معلومة</p>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section class="section">
+        <div class="container">
+            <div class="contact-wrapper">
+                <div class="contact-info-grid">
+                    <div class="contact-card">
+                        <h3>📞 الهاتف</h3>
+                        <p>+212 5 22 XX XX XX</p>
+                        <p>+212 6 XX XX XX XX</p>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <h3>📧 البريد الإلكتروني</h3>
+                        <p>info@saladdin-school.ma</p>
+                        <p>admin@saladdin-school.ma</p>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <h3>📍 العنوان</h3>
+                        <p>حي الفداء</p>
+                        <p>الدار البيضاء</p>
+                        <p>المملكة المغربية</p>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <h3>🕐 ساعات العمل</h3>
+                        <p>السبت - الخميس: 8:00 - 17:00</p>
+                        <p>الجمعة: مغلق</p>
+                    </div>
+                </div>
+                
+                <div class="contact-form-container">
+                    <h2>نموذج التواصل</h2>
+                    <form id="contactForm" class="contact-form">
+                        <div class="form-group">
+                            <label for="contactName">الاسم الكامل</label>
+                            <input type="text" id="contactName" name="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contactEmail">البريد الإلكتروني</label>
+                            <input type="email" id="contactEmail" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contactPhone">رقم الهاتف</label>
+                            <input type="tel" id="contactPhone" name="phone">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contactSubject">الموضوع</label>
+                            <select id="contactSubject" name="subject" required>
+                                <option value="">اختر الموضوع</option>
+                                <option value="استفسار">استفسار عام</option>
+                                <option value="شكوى">شكوى</option>
+                                <option value="اقتراح">اقتراح</option>
+                                <option value="أخرى">أخرى</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contactMessage">الرسالة</label>
+                            <textarea id="contactMessage" name="message" rows="5" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">إرسال الرسالة</button>
+                        <p class="form-message" id="formMessage"></p>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="map-placeholder">
+                <h2>موقعنا على الخريطة</h2>
+                <div class="map-container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3324.5878543210507!2d-7.589326!3d33.573110!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xda7d10c8d8d8d8d%3A0x1234567890ab!2sCasablanca%2C%20Morocco!5e0!3m2!1sen!2sus!4v1234567890" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 ثانوية صلاح الدين الأيوبي. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../javascript/supabase-config.js"></script>
+    <script src="../javascript/contact.js"></script>
+</body>
+</html>

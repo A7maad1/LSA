@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأنشطة - ثانوية صلاح الدين الأيوبي</title>
+    <link rel="stylesheet" href="../css/styles-dynamic.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- NAVIGATION HEADER -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo-section">
+                <img src="assets/logo.png" alt="شعار المدرسة" class="school-logo">
+                <div class="school-info">
+                    <h2>ثانوية صلاح الدين الأيوبي</h2>
+                    <p>حي الفداء – الدار البيضاء</p>
+                </div>
+            </div>
+            
+            <nav class="navbar">
+                <button class="menu-toggle">☰</button>
+                <ul class="nav-menu">
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="activities.html" class="active">الأنشطة</a></li>
+                    <li><a href="announcements.html">الإعلانات</a></li>
+                    <li><a href="meetings.html">الاجتماعات</a></li>
+                    <li><a href="holidays.html">العطل</a></li>
+                    <li><a href="contact.html">اتصل بنا</a></li>
+                    <li><a href="login.html" class="admin-link">لوحة الإدارة</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- PAGE HEADER -->
+    <section class="page-header">
+        <div class="container">
+            <h1>أنشطة المؤسسة</h1>
+            <p>استكشف جميع الأنشطة والفعاليات الخاصة بالمدرسة</p>
+        </div>
+    </section>
+
+    <!-- FILTERS -->
+    <section class="section">
+        <div class="container">
+            <div class="filters">
+                <input type="text" id="searchInput" class="search-box" placeholder="ابحث عن نشاط...">
+                <select id="sortSelect" class="sort-select">
+                    <option value="newest">الأحدث</option>
+                    <option value="oldest">الأقدم</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- ACTIVITIES GRID -->
+    <section class="section">
+        <div class="container">
+            <div class="activities-grid" id="activitiesContainer">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 ثانوية صلاح الدين الأيوبي. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../javascript/supabase-config.js"></script>
+    <script src="../javascript/activities.js"></script>
+</body>
+</html>

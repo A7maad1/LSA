@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإدارة - ثانوية صلاح الدين الأيوبي</title>
+    <link rel="stylesheet" href="../css/styles-dynamic.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- LOGIN PAGE (Initially Shown) -->
+    <div id="loginPage" class="auth-page">
+        <div class="auth-container">
+            <div class="auth-card">
+                <h1>لوحة الأساتذة والإدارة</h1>
+                <p>تسجيل الدخول</p>
+                
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="email">البريد الإلكتروني</label>
+                        <input type="email" id="email" name="email" required placeholder="your@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">كلمة المرور</label>
+                        <input type="password" id="password" name="password" required placeholder="••••••••">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">دخول</button>
+                    
+                    <p class="auth-message" id="authMessage"></p>
+                </form>
+                
+                <p class="auth-switch">
+                    ليس لديك حساب؟ <a href="#" id="switchToSignup">إنشاء حساب</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIGNUP PAGE (Hidden Initially) -->
+    <div id="signupPage" class="auth-page hidden">
+        <div class="auth-container">
+            <div class="auth-card">
+                <h1>إنشاء حساب إداري</h1>
+                <p>تسجيل مستخدم جديد</p>
+                
+                <form id="signupForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="signupEmail">البريد الإلكتروني</label>
+                        <input type="email" id="signupEmail" name="email" required placeholder="your@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signupPassword">كلمة المرور</label>
+                        <input type="password" id="signupPassword" name="password" required placeholder="••••••••">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">إنشاء حساب</button>
+                    
+                    <p class="auth-message" id="signupMessage"></p>
+                </form>
+                
+                <p class="auth-switch">
+                    لديك حساب بالفعل؟ <a href="#" id="switchToLogin">تسجيل الدخول</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD PAGE (Hidden Initially) -->
+    <div id="dashboardPage" class="dashboard hidden">
+        <header class="dashboard-header">
+            <h1>لوحة التحكم الإدارية</h1>
+            <div class="user-menu">
+                <span id="userEmail" class="user-email"></span>
+                <button id="logoutBtn" class="btn btn-logout">تسجيل خروج</button>
+            </div>
+        </header>
+
+        <div class="dashboard-container">
+            <!-- SIDEBAR -->
+            <aside class="dashboard-sidebar">
+                <nav class="sidebar-nav">
+                    <button class="nav-item active" data-section="activities">
+                        📚 إدارة الأنشطة
+                    </button>
+                    <button class="nav-item" data-section="announcements">
+                        📢 إدارة الإعلانات
+                    </button>
+                    <button class="nav-item" data-section="meetings">
+                        🗓️ إدارة الاجتماعات
+                    </button>
+                </nav>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <main class="dashboard-main">
+                <!-- ACTIVITIES SECTION -->
+                <section id="activitiesSection" class="dashboard-section active">
+                    <h2>إدارة الأنشطة</h2>
+                    
+                    <div class="add-form-container">
+                        <h3>إضافة نشاط جديد</h3>
+                        <form id="addActivityForm" class="dashboard-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="actTitle">عنوان النشاط</label>
+                                    <input type="text" id="actTitle" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="actDate">التاريخ</label>
+                                    <input type="date" id="actDate" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="actDesc">الوصف</label>
+                                <textarea id="actDesc" rows="4" required></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="actImage">صورة النشاط</label>
+                                <input type="file" id="actImage" accept="image/*">
+                                <span class="form-hint">سيتم رفع الصورة إلى Supabase Storage</span>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">إضافة النشاط</button>
+                        </form>
+                    </div>
+                    
+                    <div class="items-list-container">
+                        <h3>الأنشطة الحالية</h3>
+                        <div id="activitiesList" class="items-list">
+                            <div class="loading">جاري التحميل...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ANNOUNCEMENTS SECTION -->
+                <section id="announcementsSection" class="dashboard-section">
+                    <h2>إدارة الإعلانات</h2>
+                    
+                    <div class="add-form-container">
+                        <h3>إضافة إعلان جديد</h3>
+                        <form id="addAnnouncementForm" class="dashboard-form">
+                            <div class="form-group">
+                                <label for="annTitle">عنوان الإعلان</label>
+                                <input type="text" id="annTitle" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="annContent">محتوى الإعلان</label>
+                                <textarea id="annContent" rows="5" required></textarea>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="annCategory">التصنيف</label>
+                                    <select id="annCategory" required>
+                                        <option value="عام">عام</option>
+                                        <option value="هام">هام</option>
+                                        <option value="امتحان">امتحان</option>
+                                        <option value="عطلة">عطلة</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="annFile">ملف PDF (اختياري)</label>
+                                    <input type="file" id="annFile" accept=".pdf">
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">نشر الإعلان</button>
+                        </form>
+                    </div>
+                    
+                    <div class="items-list-container">
+                        <h3>الإعلانات الحالية</h3>
+                        <div id="announcementsList" class="items-list">
+                            <div class="loading">جاري التحميل...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MEETINGS SECTION -->
+                <section id="meetingsSection" class="dashboard-section">
+                    <h2>إدارة الاجتماعات</h2>
+                    
+                    <div class="add-form-container">
+                        <h3>إضافة اجتماع جديد</h3>
+                        <form id="addMeetingForm" class="dashboard-form">
+                            <div class="form-group">
+                                <label for="meetSubject">موضوع الاجتماع</label>
+                                <input type="text" id="meetSubject" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="meetDate">التاريخ والوقت</label>
+                                    <input type="datetime-local" id="meetDate" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="meetLocation">المكان</label>
+                                    <input type="text" id="meetLocation" placeholder="المدرسة / الإدارة">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="meetDesc">الوصف</label>
+                                <textarea id="meetDesc" rows="4"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">إضافة الاجتماع</button>
+                        </form>
+                    </div>
+                    
+                    <div class="items-list-container">
+                        <h3>الاجتماعات المقررة</h3>
+                        <div id="meetingsList" class="items-list">
+                            <div class="loading">جاري التحميل...</div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../javascript/supabase-config.js"></script>
+    <script src="../javascript/dashboard.js"></script>
+</body>
+</html>

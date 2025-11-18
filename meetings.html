@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الاجتماعات - ثانوية صلاح الدين الأيوبي</title>
+    <link rel="stylesheet" href="../css/styles-dynamic.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- NAVIGATION HEADER -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo-section">
+                <img src="assets/logo.png" alt="شعار المدرسة" class="school-logo">
+                <div class="school-info">
+                    <h2>ثانوية صلاح الدين الأيوبي</h2>
+                    <p>حي الفداء – الدار البيضاء</p>
+                </div>
+            </div>
+            
+            <nav class="navbar">
+                <button class="menu-toggle">☰</button>
+                <ul class="nav-menu">
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="activities.html">الأنشطة</a></li>
+                    <li><a href="announcements.html">الإعلانات</a></li>
+                    <li><a href="meetings.html" class="active">الاجتماعات</a></li>
+                    <li><a href="holidays.html">العطل</a></li>
+                    <li><a href="contact.html">اتصل بنا</a></li>
+                    <li><a href="login.html" class="admin-link">لوحة الإدارة</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- PAGE HEADER -->
+    <section class="page-header">
+        <div class="container">
+            <h1>الاجتماعات المقررة</h1>
+            <p>جدول الاجتماعات والفعاليات المهمة</p>
+        </div>
+    </section>
+
+    <!-- MEETINGS LIST -->
+    <section class="section">
+        <div class="container">
+            <div class="meetings-list" id="meetingsContainer">
+                <div class="skeleton-item"></div>
+                <div class="skeleton-item"></div>
+                <div class="skeleton-item"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 ثانوية صلاح الدين الأيوبي. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../javascript/supabase-config.js"></script>
+    <script src="../javascript/meetings.js"></script>
+</body>
+</html>
