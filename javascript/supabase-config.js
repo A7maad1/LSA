@@ -3,40 +3,36 @@
 // ============================================
 
 // Initialize Supabase Client
-const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'YOUR_ANON_KEY';
 
-// Supabase Client (using fetchAPI)
 class SupabaseClient {
     constructor(url, key) {
         this.url = url;
-        this.key = key;
+        this.headers = {
+            'Authorization': `Bearer ${key}`,
+            'Content-Type': 'application/json',
+            'apikey': key
+        };
     }
 
-    async query(endpoint, options = {}) {
-        const defaultOptions = {
-            headers: {
-                'apikey': this.key,
-                'Authorization': `Bearer ${this.key}`,
-                'Content-Type': 'application/json',
-            },
-        };
-
-        const response = await fetch(
-            `${this.url}/rest/v1${endpoint}`,
-            { ...defaultOptions, ...options }
-        );
-
-        if (!response.ok) {
-            throw new Error(`Supabase Error: ${response.statusText}`);
+    async request(endpoint, options = {}) {
+        const url = `${this.url}/rest/v1${endpoint}`;
+        try {
+            const response = await fetch(url, {
+                headers: this.headers,
+                ...options
+            });
+            if (!response.ok) throw new Error(`API error: ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            console.error('Supabase request error:', error);
+            throw error;
         }
-
-        return response.json();
     }
 }
 
-// Initialize Supabase Client
-const supabase = new SupabaseClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const client = new SupabaseClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ============================================
 // ACTIVITIES CRUD OPERATIONS
