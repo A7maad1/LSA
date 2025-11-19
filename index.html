@@ -467,27 +467,14 @@
         </div>
     </section>
 
-    <!-- ADMIN LOGIN MODAL -->
-    <div id="adminLoginModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>لوحة الإدارة والأساتذة</h2>
-            <form id="adminLoginForm">
-                <div class="form-group">
-                    <label for="username">اسم المستخدم</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">كلمة المرور</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <button type="submit" class="submit-btn">دخول</button>
-                <p class="login-hint">بيانات تجريبية: admin / admin123</p>
-            </form>
-        </div>
-    </div>
-
-    <!-- ADMIN DASHBOARD -->
+    <!-- ADMIN LOGIN REDIRECT -->
+    <script>
+        // Redirect admin login to dashboard
+        document.querySelector('.admin-btn')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '/dashboard.html';
+        });
+    </script>
     <div id="adminDashboard" class="admin-dashboard hidden">
         <div class="admin-header">
             <h1>لوحة الأساتذة والإدارة</h1>

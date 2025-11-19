@@ -274,3 +274,51 @@ const API = {
         }
     }
 };
+
+// ============================================
+// AUTH API - For Dashboard Login
+// ============================================
+
+const authAPI = {
+    signUp: async (email, password) => {
+        try {
+            const response = await supabase.auth().signUp(email, password);
+            if (response.user) {
+                localStorage.setItem('sb_user', JSON.stringify(response.user));
+                localStorage.setItem('sb_token', response.session?.access_token || 'token');
+                return response.user;
+            }
+            throw new Error('Signup failed');
+        } catch (error) {
+            console.error('Signup error:', error);
+            throw error;
+        }
+    },
+
+    signIn: async (email, password) => {
+        try {
+            const response = await supabase.auth().signIn(email, password);
+            if (response.user) {
+                localStorage.setItem('sb_user', JSON.stringify(response.user));
+                localStorage.setItem('sb_token', response.session?.access_token || 'token');
+                return response.user;
+            }
+            throw new Error('Login failed');
+        } catch (error) {
+            console.error('Login error:', error);
+            throw error;
+        }
+    },
+
+    signOut: async () => {
+        localStorage.removeItem('sb_user');
+        localStorage.removeItem('sb_token');
+        return true;
+    },
+
+    getSession: () => {
+        const user = localStorage.getItem('sb_user');
+        const token = localStorage.getItem('sb_token');
+        return user && token ? JSON.parse(user) : null;
+    }
+};
