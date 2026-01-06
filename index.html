@@ -4,28 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ثانوية صلاح الدين الأيوبي – حي الفداء – الدار البيضاء</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <script src="javascript/toast.js"></script>
+    <script src="javascript/supabase-client.js"></script>
+    <script src="javascript/app.js"></script>
+    <script src="javascript/certificates.js"></script>
+    <script src="javascript/script.js"></script>
 </head>
 <body>
     <!-- HEADER WITH LOGO -->
     <header class="header">
         <div class="header-container">
-            <div class="ministry-logo">
-                <img src="assets/Logo-Ministry.png" alt="وزارة التربية الوطنية والتعليم الأولي والرياضة - المملكة المغربية">
-                <span class="ministry-name">وزارة التربية الوطنية والتعليم الأولي والرياضة</span>
-            </div>
             <nav class="navbar">
                 <button class="menu-toggle">☰</button>
+            <div class="ministry-logo">
+                <img src="work image 1.jpg" alt="وزارة التربية الوطنية والتعليم الأولي والرياضة - المملكة المغربية">
+            </div>
                 <ul class="nav-menu">
                     <li><a href="#home">الرئيسية</a></li>
                     <li><a href="#activities">أنشطة المؤسسة</a></li>
                     <li><a href="#memos">المذكرات الوطنية</a></li>
                     <li><a href="#holidays">العطل الرسمية</a></li>
-                    <li><a href="#teachers">الأساتذة</a></li>
+                    <li><a href="#certificates">شهادات المدرسة</a></li>
                     <li><a href="#gallery">المعرض</a></li>
                     <li><a href="#contact">اتصل بنا</a></li>
-                    <li><a href="#admin-login" class="admin-btn">لوحة الإدارة</a></li>
                 </ul>
             </nav>
         </div>
@@ -44,7 +47,7 @@
     <!-- NATIONAL MEMOS SECTION -->
     <section class="memos-section" id="memos">
         <div class="container">
-            <h2 class="section-title">المذكرات و الإعلانات الوطنية</h2>
+            <h2 class="section-title">إعلانات المدرسة</h2>
             
             <div class="memos-controls">
                 <input type="text" id="memoSearch" class="search-bar" placeholder="ابحث عن مذكرة...">
@@ -62,45 +65,6 @@
 
             <div class="memos-list" id="memosList">
                 <!-- Memos will be populated by JavaScript -->
-                <div class="memo-item" data-category="exams">
-                    <div class="memo-icon">📄</div>
-                    <div class="memo-content">
-                        <h3>جدول الامتحانات النهائية - الدورة الأولى</h3>
-                        <p>تاريخ الإصدار: 15 نوفمبر 2025</p>
-                        <p class="memo-description">جدول محدث لامتحانات الدورة الأولى لجميع المستويات</p>
-                        <a href="#" class="download-btn">تحميل PDF</a>
-                    </div>
-                </div>
-
-                <div class="memo-item" data-category="ministry">
-                    <div class="memo-icon">📋</div>
-                    <div class="memo-content">
-                        <h3>مذكرة وزارية حول البرامج الجديدة</h3>
-                        <p>تاريخ الإصدار: 12 نوفمبر 2025</p>
-                        <p class="memo-description">توجيهات وزارية جديدة بخصوص البرامج التعليمية</p>
-                        <a href="#" class="download-btn">تحميل PDF</a>
-                    </div>
-                </div>
-
-                <div class="memo-item" data-category="competitions">
-                    <div class="memo-icon">🏆</div>
-                    <div class="memo-content">
-                        <h3>مسابقة الأولمبياد الوطنية للرياضيات</h3>
-                        <p>تاريخ الإصدار: 10 نوفمبر 2025</p>
-                        <p class="memo-description">إعلان عن بدء التسجيل في مسابقة الأولمبياد</p>
-                        <a href="#" class="download-btn">تحميل PDF</a>
-                    </div>
-                </div>
-
-                <div class="memo-item" data-category="exams">
-                    <div class="memo-icon">📄</div>
-                    <div class="memo-content">
-                        <h3>إعلانات مواعيد الامتحانات الشهرية</h3>
-                        <p>تاريخ الإصدار: 8 نوفمبر 2025</p>
-                        <p class="memo-description">مواعيد الامتحانات الشهرية لجميع المواد</p>
-                        <a href="#" class="download-btn">تحميل PDF</a>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -188,160 +152,48 @@
             
             <div class="activities-grid" id="activitiesGrid">
                 <!-- Activities will be populated by JavaScript -->
-                <div class="activity-card">
-                    <div class="activity-image" style="background: linear-gradient(135deg, #1A73E8 0%, #2ECC71 100%);">
-                        <img src="assets/activity-1.jpg" alt="نشاط 1">
-                    </div>
-                    <div class="activity-content">
-                        <h3>فعالية الرياضيات</h3>
-                        <p class="activity-date">📅 15 نوفمبر 2025</p>
-                        <p class="activity-description">مسابقة تنافسية في الرياضيات بين تلاميذ المستويات المختلفة لاكتشاف المواهب</p>
-                        <button class="read-more-btn">اقرأ المزيد →</button>
-                    </div>
-                </div>
-
-                <div class="activity-card">
-                    <div class="activity-image" style="background: linear-gradient(135deg, #2ECC71 0%, #1A73E8 100%);">
-                        <img src="assets/activity-2.jpg" alt="نشاط 2">
-                    </div>
-                    <div class="activity-content">
-                        <h3>مشروع النظافة والبيئة</h3>
-                        <p class="activity-date">📅 12 نوفمبر 2025</p>
-                        <p class="activity-description">حملة تطوعية لتنظيف المؤسسة والمحافظة على البيئة بمشاركة الطلاب والأساتذة</p>
-                        <button class="read-more-btn">اقرأ المزيد →</button>
-                    </div>
-                </div>
-
-                <div class="activity-card">
-                    <div class="activity-image" style="background: linear-gradient(135deg, #F5F5F5 0%, #1A73E8 100%);">
-                        <img src="assets/activity-3.jpg" alt="نشاط 3">
-                    </div>
-                    <div class="activity-content">
-                        <h3>مسرح تربوي</h3>
-                        <p class="activity-date">📅 10 نوفمبر 2025</p>
-                        <p class="activity-description">عرض مسرحي تربوي يهدف لتنمية المهارات الفنية والإبداعية لدى الطلاب</p>
-                        <button class="read-more-btn">اقرأ المزيد →</button>
-                    </div>
-                </div>
-
-                <div class="activity-card">
-                    <div class="activity-image" style="background: linear-gradient(135deg, #2ECC71 0%, #F5F5F5 100%);">
-                        <img src="assets/activity-4.jpg" alt="نشاط 4">
-                    </div>
-                    <div class="activity-content">
-                        <h3>مجلة الجدران التربوية</h3>
-                        <p class="activity-date">📅 8 نوفمبر 2025</p>
-                        <p class="activity-description">إنشاء ملصقات تربوية وإعلامية لتعزيز الوعي الثقافي والاجتماعي لدى الطلاب</p>
-                        <button class="read-more-btn">اقرأ المزيد →</button>
-                    </div>
-                </div>
-
-                <div class="activity-card">
-                    <div class="activity-image" style="background: linear-gradient(135deg, #1A73E8 0%, #F5F5F5 100%);">
-                        <img src="assets/activity-5.jpg" alt="نشاط 5">
-                    </div>
-                    <div class="activity-content">
-                        <h3>رحلة ثقافية تعليمية</h3>
-                        <p class="activity-date">📅 5 نوفمبر 2025</p>
-                        <p class="activity-description">زيارة ميدانية لأماكن تاريخية وثقافية لتعميق المعرفة والوعي التاريخي</p>
-                        <button class="read-more-btn">اقرأ المزيد →</button>
-                    </div>
-                </div>
-
-                <div class="activity-card">
-                    <div class="activity-image" style="background: linear-gradient(135deg, #2ECC71 0%, #1A73E8 100%);">
-                        <img src="assets/activity-6.jpg" alt="نشاط 6">
-                    </div>
-                    <div class="activity-content">
-                        <h3>مسابقة الكتابة الأدبية</h3>
-                        <p class="activity-date">📅 1 نوفمبر 2025</p>
-                        <p class="activity-description">مسابقة في الكتابة الأدبية والقصة القصيرة لتشجيع الطلاب على الإبداع الأدبي</p>
-                        <button class="read-more-btn">اقرأ المزيد →</button>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
 
-    <!-- TEACHERS & SCHEDULE SECTION -->
-    <section class="teachers-section" id="teachers">
+    <!-- SCHOOL CERTIFICATE SUBMISSION SECTION -->
+    <section class="certificate-section" id="certificates">
         <div class="container">
-            <h2 class="section-title">الأساتذة والجداول الزمنية</h2>
+            <h2 class="section-title">الشهادة المدرسية</h2>
             
-            <div class="tabs">
-                <button class="tab-button active" data-tab="schedule">الجداول الزمنية</button>
-                <button class="tab-button" data-tab="staff">الأساتذة</button>
-            </div>
+            <div class="certificate-form-container">
+                <div class="certificate-form-wrapper">
+                    <form id="certificateForm" class="certificate-form">
+                        <div class="form-header">
+                            <h3>طلب شهادة مدرسية</h3>
+                            <p class="form-subtitle">يرجى ملء البيانات المطلوبة بدقة</p>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="certFirstName">الاسم *</label>
+                                <input type="text" id="certFirstName" name="first_name" placeholder="أدخل الاسم الأول" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="certLastName">النسب *</label>
+                                <input type="text" id="certLastName" name="last_name" placeholder="أدخل اسم العائلة" required>
+                            </div>
+                        </div>
 
-            <div class="tab-content active" id="schedule">
-                <div class="schedule-grid">
-                    <div class="day-schedule">
-                        <h3>الأحد - الاثنين - الثلاثاء - الأربعاء - الخميس</h3>
-                        <p>الدوام من الساعة 8:00 صباحاً إلى 4:00 مساءً</p>
-                        <ul>
-                            <li>الحصة الأولى: 8:00 - 9:00</li>
-                            <li>الحصة الثانية: 9:00 - 10:00</li>
-                            <li>استراحة: 10:00 - 10:15</li>
-                            <li>الحصة الثالثة: 10:15 - 11:15</li>
-                            <li>الحصة الرابعة: 11:15 - 12:15</li>
-                            <li>فسحة الغداء: 12:15 - 1:30</li>
-                            <li>الحصة الخامسة: 1:30 - 2:30</li>
-                            <li>الحصة السادسة: 2:30 - 3:30</li>
-                            <li>الحصة السابعة: 3:30 - 4:30</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="certMassarNumber">رقم المسار *</label>
+                                <input type="text" id="certMassarNumber" name="massar_number" placeholder="أدخل رقم المسار" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="certDate">التاريخ *</label>
+                                <input type="date" id="certDate" name="submission_date" required>
+                            </div>
+                        </div>
 
-            <div class="tab-content" id="staff">
-                <div class="staff-grid">
-                    <div class="staff-card">
-                        <div class="staff-avatar" style="background-color: #1A73E8;">د.م</div>
-                        <h4>د. محمد العربي</h4>
-                        <p class="staff-role">مدير المؤسسة</p>
-                        <p class="staff-subject">الرياضيات</p>
-                        <p class="staff-contact">📧 m.arabi@school.ma</p>
-                    </div>
-
-                    <div class="staff-card">
-                        <div class="staff-avatar" style="background-color: #2ECC71;">ف.أ</div>
-                        <h4>السيدة فاطمة أحمد</h4>
-                        <p class="staff-role">نائبة المدير</p>
-                        <p class="staff-subject">اللغة العربية</p>
-                        <p class="staff-contact">📧 f.ahmed@school.ma</p>
-                    </div>
-
-                    <div class="staff-card">
-                        <div class="staff-avatar" style="background-color: #2ECC71;">ح.م</div>
-                        <h4>حسن محمود</h4>
-                        <p class="staff-role">معلم</p>
-                        <p class="staff-subject">الفيزياء</p>
-                        <p class="staff-contact">📧 h.mahmoud@school.ma</p>
-                    </div>
-
-                    <div class="staff-card">
-                        <div class="staff-avatar" style="background-color: #1A73E8;">ن.ع</div>
-                        <h4>نور العمري</h4>
-                        <p class="staff-role">معلمة</p>
-                        <p class="staff-subject">الكيمياء</p>
-                        <p class="staff-contact">📧 n.amri@school.ma</p>
-                    </div>
-
-                    <div class="staff-card">
-                        <div class="staff-avatar" style="background-color: #2ECC71;">س.ك</div>
-                        <h4>سارة كريم</h4>
-                        <p class="staff-role">معلمة</p>
-                        <p class="staff-subject">اللغة الفرنسية</p>
-                        <p class="staff-contact">📧 s.karim@school.ma</p>
-                    </div>
-
-                    <div class="staff-card">
-                        <div class="staff-avatar" style="background-color: #1A73E8;">ع.ب</div>
-                        <h4>عمر البكري</h4>
-                        <p class="staff-role">معلم</p>
-                        <p class="staff-subject">الاجتماعيات</p>
-                        <p class="staff-contact">📧 o.bakri@school.ma</p>
-                    </div>
+                        <button type="submit" class="submit-btn">إرسال الطلب</button>
+                        <p class="form-message" id="certMessage"></p>
+                    </form>
                 </div>
             </div>
         </div>
@@ -354,49 +206,85 @@
             
             <div class="gallery-grid" id="galleryGrid">
                 <div class="gallery-item">
-                    <img src="assets/gallery-1.jpg" alt="معرض 1">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                        <rect width="400" height="300" fill="#e8f4f8"/>
+                        <circle cx="200" cy="120" r="50" fill="#1A73E8" opacity="0.2"/>
+                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">حفل التكريم</text>
+                    </svg>
                     <div class="gallery-overlay">
                         <p>حفل التكريم</p>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="assets/gallery-2.jpg" alt="معرض 2">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                        <rect width="400" height="300" fill="#f0e8f8"/>
+                        <circle cx="150" cy="120" r="40" fill="#00B050" opacity="0.2"/>
+                        <circle cx="250" cy="150" r="40" fill="#00B050" opacity="0.2"/>
+                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">نشاط رياضي</text>
+                    </svg>
                     <div class="gallery-overlay">
                         <p>نشاط رياضي</p>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="assets/gallery-3.jpg" alt="معرض 3">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                        <rect width="400" height="300" fill="#f8f4e8"/>
+                        <rect x="80" y="60" width="240" height="180" fill="none" stroke="#FF9800" stroke-width="3" opacity="0.3"/>
+                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">اجتماع الأساتذة</text>
+                    </svg>
                     <div class="gallery-overlay">
                         <p>اجتماع الأساتذة</p>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="assets/gallery-4.jpg" alt="معرض 4">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                        <rect width="400" height="300" fill="#e8f8f4"/>
+                        <polygon points="200,80 280,180 120,180" fill="#4CAF50" opacity="0.2"/>
+                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">مسابقة علمية</text>
+                    </svg>
                     <div class="gallery-overlay">
                         <p>مسابقة علمية</p>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="assets/gallery-5.jpg" alt="معرض 5">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                        <rect width="400" height="300" fill="#f8e8f0"/>
+                        <circle cx="200" cy="140" r="60" fill="#E91E63" opacity="0.2"/>
+                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">حفل التخريج</text>
+                    </svg>
                     <div class="gallery-overlay">
                         <p>حفل التخريج</p>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="assets/gallery-6.jpg" alt="معرض 6">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                        <rect width="400" height="300" fill="#f4e8f8"/>
+                        <rect x="100" y="80" width="60" height="120" fill="#9C27B0" opacity="0.2"/>
+                        <rect x="200" y="100" width="60" height="100" fill="#9C27B0" opacity="0.2"/>
+                        <rect x="300" y="60" width="60" height="140" fill="#9C27B0" opacity="0.2"/>
+                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">نشاط ثقافي</text>
+                    </svg>
                     <div class="gallery-overlay">
                         <p>نشاط ثقافي</p>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="assets/gallery-7.jpg" alt="معرض 7">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                        <rect width="400" height="300" fill="#e8f8e8"/>
+                        <path d="M100 200 L150 100 L200 150 L250 80 L300 180" stroke="#00897B" stroke-width="3" fill="none" opacity="0.3"/>
+                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">زيارة ميدانية</text>
+                    </svg>
                     <div class="gallery-overlay">
                         <p>زيارة ميدانية</p>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="assets/gallery-8.jpg" alt="معرض 8">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                        <rect width="400" height="300" fill="#f8f0e8"/>
+                        <circle cx="200" cy="100" r="40" fill="#FF5722" opacity="0.2"/>
+                        <path d="M200 140 L240 200 L160 200 Z" fill="#FF5722" opacity="0.2"/>
+                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">افتتاح المشروع</text>
+                    </svg>
                     <div class="gallery-overlay">
                         <p>افتتاح المشروع</p>
                     </div>
@@ -428,12 +316,6 @@
                         <p>info@saladdin-school.ma</p>
                         <p>admin@saladdin-school.ma</p>
                     </div>
-
-                    <div class="contact-item">
-                        <h3>🕐 ساعات العمل</h3>
-                        <p>الأحد - الخميس: 8:00 - 17:00</p>
-                        <p>الجمعة - السبت: مغلق</p>
-                    </div>
                 </div>
 
                 <div class="contact-form">
@@ -458,23 +340,14 @@
                     </form>
                 </div>
 
-                <div class="map-placeholder">
-                    <div style="background: #f0f0f0; height: 300px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #666;">
-                        <p>خريطة جوجل (Google Maps) - يمكن دمجها لاحقاً</p>
-                    </div>
+                <div class="map-container">
+                    <h3 style="text-align: center; color: #1A73E8; margin-bottom: 20px; font-size: 20px;">📍 موقع المدرسة</h3>
+                    <iframe src="https://www.google.com/maps?output=embed&q=33.57134527215558,-7.589251309543613&zoom=15" width="100%" height="400" style="border: none; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ADMIN LOGIN REDIRECT -->
-    <script>
-        // Redirect admin login to dashboard
-        document.querySelector('.admin-btn')?.addEventListener('click', function(e) {
-            e.preventDefault();
-            window.location.href = '/dashboard.html';
-        });
-    </script>
     <div id="adminDashboard" class="admin-dashboard hidden">
         <div class="admin-header">
             <h1>لوحة الأساتذة والإدارة</h1>
@@ -783,6 +656,7 @@
                     <li><a href="#activities">الأنشطة</a></li>
                     <li><a href="#memos">المذكرات</a></li>
                     <li><a href="#contact">اتصل بنا</a></li>
+                    <li><a href="#admin-login" class="admin-btn">لوحة الإدارة</a></li>
                 </ul>
             </div>
 
@@ -809,7 +683,5 @@
             <p>تم تطوير الموقع بواسطة فريق التكنولوجيا بالمؤسسة</p>
         </div>
     </footer>
-
-    <script src="script.js"></script>
 </body>
 </html>

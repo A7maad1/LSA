@@ -44,7 +44,7 @@ async function loadAnnouncementsData() {
     try {
         container.innerHTML = '<p class="loading">جاري تحميل الإعلانات...</p>';
         
-        allAnnouncements = await announcementsAPI.getAll();
+        allAnnouncements = await API.announcements.getAll();
         // Sort by newest first
         allAnnouncements.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         filteredAnnouncements = [...allAnnouncements];

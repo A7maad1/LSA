@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعداد قاعدة البيانات</title>
+    <style>
+        body {
+            font-family: 'Cairo', Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1A73E8;
+            text-align: center;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #1A73E8;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #1557B0;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            display: block !important;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block !important;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>إعداد قاعدة البيانات</h1>
+        <p>انسخ الأمر SQL التالي والصقه في Supabase SQL Editor:</p>
+        
+        <textarea id="sqlCode" readonly></textarea>
+        
+        <button onclick="copySql()">نسخ الأمر SQL</button>
+        <button onclick="testConnection()">اختبار الاتصال</button>
+        
+        <div id="status"></div>
+    </div>
+
+    <script src="javascript/supabase-client.js"></script>
+    <script>
+        const sqlCode = `-- Create certificate_requests table
+CREATE TABLE IF NOT EXISTS certificate_requests (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  student_id TEXT NOT NULL,
+  status TEXT DEFAULT 'pending',
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Create indexes for faster queries
+CREATE INDEX IF NOT EXISTS idx_cert_requests_student_id ON certificate_requests(student_id);
+CREATE INDEX IF NOT EXISTS idx_cert_requests_status ON certificate_requests(status);
+
+-- Disable Row Level Security for testing
+ALTER TABLE certificate_requests DISABLE ROW LEVEL SECURITY;`;
+
+        document.getElementById('sqlCode').value = sqlCode;
+
+        function copySql() {
+            const textarea = document.getElementById('sqlCode');
+            textarea.select();
+            document.execCommand('copy');
+            showStatus('✅ تم نسخ الأمر SQL', 'success');
+        }
+
+        async function testConnection() {
+            const status = document.getElementById('status');
+            try {
+                status.textContent = 'جاري الاختبار...';
+                status.className = '';
+                status.style.display = 'block';
+                
+                // Try to create a test record
+                const result = await API.certificates.create({
+                    first_name: 'اختبار',
+                    last_name: 'الاتصال',
+                    student_id: 'TEST-' + Date.now(),
+                    status: 'test'
+                });
+                
+                if (result) {
+                    showStatus('✅ الاتصال سليم والجدول موجود! يمكن الآن تقديم الطلبات.', 'success');
+                    // Delete test record
+                    if (result.id) {
+                        await API.certificates.delete(result.id);
+                    }
+                } else {
+                    showStatus('❌ حدث خطأ في الاتصال', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showStatus(`❌ خطأ: ${error.message}`, 'error');
+            }
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = type;
+            status.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

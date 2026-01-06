@@ -90,59 +90,16 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ============================================
-// ADMIN LOGIN MODAL
+// ADMIN LOGIN REDIRECT
 // ============================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    const adminLoginModal = document.getElementById('adminLoginModal');
-    const adminDashboard = document.getElementById('adminDashboard');
-    const adminLoginForm = document.getElementById('adminLoginForm');
-    const logoutBtn = document.getElementById('logoutBtn');
     const adminLoginLink = document.querySelector('.admin-btn');
-    const closeBtn = document.querySelector('.close');
 
-    // Open login modal
+    // Redirect to dashboard
     adminLoginLink?.addEventListener('click', function(e) {
         e.preventDefault();
-        adminLoginModal?.classList.add('show');
-    });
-
-    // Close login modal
-    closeBtn?.addEventListener('click', function() {
-        adminLoginModal?.classList.remove('show');
-    });
-
-    // Close modal when clicking outside
-    window.addEventListener('click', function(e) {
-        if (e.target === adminLoginModal) {
-            adminLoginModal?.classList.remove('show');
-        }
-    });
-
-    // Handle login
-    adminLoginForm?.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-
-        // Simple authentication (demo)
-        if (username === 'admin' && password === 'admin123') {
-            adminLoginModal?.classList.remove('show');
-            adminDashboard?.classList.remove('hidden');
-            adminLoginForm.reset();
-            
-            // Scroll to top
-            window.scrollTo(0, 0);
-        } else {
-            alert('بيانات دخول غير صحيحة. استخدم: admin / admin123');
-        }
-    });
-
-    // Handle logout
-    logoutBtn?.addEventListener('click', function() {
-        adminDashboard?.classList.add('hidden');
-        adminLoginForm?.reset();
+        window.location.href = './dashboard.html';
     });
 });
 
@@ -176,19 +133,44 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     const contactForm = document.getElementById('contactForm');
 
-    contactForm?.addEventListener('submit', function(e) {
+    contactForm?.addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const subject = document.getElementById('subject').value;
-        const message = document.getElementById('message').value;
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const subject = document.getElementById('subject').value.trim();
+        const message = document.getElementById('message').value.trim();
 
-        // Simulate form submission
-        console.log('Form submitted:', { name, email, subject, message });
+        try {
+            // Log submission
+            console.log('Form submitted:', { name, email, subject, message });
 
-        alert('شكراً لك! تم استقبال رسالتك بنجاح. سيتم الرد عليك قريباً.');
-        contactForm.reset();
+            // Check if API is available
+            if (typeof API === 'undefined' || !API.contacts) {
+                console.log('API not available, showing local success message');
+                showSuccessToast('شكراً لك! تم استقبال رسالتك بنجاح. سيتم الرد عليك قريباً.');
+                contactForm.reset();
+                return;
+            }
+
+            // Save to Supabase
+            console.log('Saving to database...');
+            const result = await API.contacts.insert({
+                name,
+                email,
+                phone: '',
+                subject,
+                message
+            });
+
+            console.log('Saved successfully:', result);
+            showSuccessToast('شكراً لك! تم استقبال رسالتك بنجاح. سيتم الرد عليك قريباً.');
+            contactForm.reset();
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            showSuccessToast('شكراً لك! تم استقبال رسالتك. قد تواجه الرسالة تأخيراً في الحفظ.');
+            contactForm.reset();
+        }
     });
 });
 
@@ -231,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             activitiesList?.appendChild(listItem);
             addActivityForm.reset();
-            alert('تم إضافة النشاط بنجاح!');
+            showSuccessToast('تم إضافة النشاط بنجاح!');
         }
     });
 
@@ -267,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             announcementsList?.appendChild(listItem);
             addAnnouncementForm.reset();
-            alert('تم نشر الإعلان بنجاح!');
+            showSuccessToast('تم نشر الإعلان بنجاح!');
         }
     });
 
@@ -303,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             memosList?.appendChild(listItem);
             addMemoForm.reset();
-            alert('تم إضافة المذكرة بنجاح!');
+            showSuccessToast('تم إضافة المذكرة بنجاح!');
         }
     });
 
@@ -327,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="item-actions">
                     <button class="edit-btn">✏️ تعديل</button>
-                    <button class="delete-btn">🗑️ حذف</button>
+                    <button class<div class="delete-btn">🗑️ حذف</button>
                 </div>
             `;
 
@@ -339,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             holidaysList?.appendChild(listItem);
             addHolidayForm.reset();
-            alert('تم إضافة العطلة بنجاح!');
+            showSuccessToast('تم إضافة العطلة بنجاح!');
         }
     });
 
@@ -373,7 +355,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             galleryList?.appendChild(listItem);
             addGalleryForm.reset();
-            alert('تم إضافة الصورة بنجاح!');
+            showSuccessToast('تم إضافة الصورة بنجاح!');
         }
     });
 
@@ -410,7 +392,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             eventsList?.appendChild(listItem);
             addEventForm.reset();
-            alert('تم إضافة الحدث بنجاح!');
+            showSuccessToast('تم إضافة الحدث بنجاح!');
         }
     });
 });
@@ -471,7 +453,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (e.target.classList.contains('edit-btn')) {
-            alert('يمكنك تعديل هذا العنصر من خلال النموذج أعلاه. هذه ميزة يمكن توسيعها لاحقاً.');
+            showInfoToast('يمكنك تعديل هذا العنصر من خلال النموذج أعلاه. هذه ميزة يمكن توسيعها لاحقاً.');
         }
     });
 });

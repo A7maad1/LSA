@@ -161,7 +161,7 @@ function showDashboard() {
     if (session) {
         document.getElementById('loginPage').classList.add('hidden');
         document.getElementById('dashboardPage').classList.remove('hidden');
-        document.getElementById('userEmail').textContent = 'مدير النظام';
+        document.getElementById('userEmail').textContent = session.email || 'مدير النظام';
     }
 }
 
@@ -189,6 +189,10 @@ function switchSection(section) {
         loadAnnouncements();
     } else if (section === 'meetings') {
         loadMeetings();
+    } else if (section === 'certificates') {
+        loadCertificateRequests();
+    } else if (section === 'contacts') {
+        loadContactMessages();
     }
 }
 
@@ -200,13 +204,17 @@ async function loadAllData() {
     loadActivities();
     loadAnnouncements();
     loadMeetings();
+    loadContactMessages();
 }
 
 async function loadActivities() {
     const container = document.getElementById('activitiesList');
     
     try {
-        const activities = await activitiesAPI.getAll();
+        const activities = await API.activities.getAll();
+        
+        // Store activities globally for edit functionality
+        window.allActivities = activities;
         
         if (activities.length === 0) {
             container.innerHTML = '<p class="loading">لا توجد أنشطة حالياً</p>';
@@ -221,15 +229,81 @@ async function loadActivities() {
                     <p>${truncateText(activity.description, 80)}</p>
                 </div>
                 <div class="item-actions">
-                    <button class="item-edit" onclick="editActivity(${activity.id})">✏️ تعديل</button>
-                    <button class="item-delete" onclick="deleteActivity(${activity.id})">🗑️ حذف</button>
+                    <button class="item-edit" data-action="edit" data-id="${activity.id}">✏️ تعديل</button>
+                    <button class="item-delete" data-action="delete" data-id="${activity.id}">🗑️ حذف</button>
                 </div>
             </div>
         `).join('');
+        
+        // Add event listeners using event delegation
+        setupActivityActionListeners();
     } catch (error) {
         console.error('Error loading activities:', error);
         container.innerHTML = '<p class="loading">خطأ في تحميل البيانات</p>';
     }
+}
+
+function setupActivityActionListeners() {
+    const container = document.getElementById('activitiesList');
+    
+    // Remove old listener if it exists
+    const newContainer = container.cloneNode(true);
+    container.parentNode.replaceChild(newContainer, container);
+    
+    newContainer.addEventListener('click', async (e) => {
+        const deleteBtn = e.target.closest('[data-action="delete"]');
+        const editBtn = e.target.closest('[data-action="edit"]');
+        
+        if (deleteBtn) {
+            const id = deleteBtn.getAttribute('data-id');
+            await deleteActivity(id);
+        }
+        
+        if (editBtn) {
+            const id = editBtn.getAttribute('data-id');
+            editActivity(id);
+        }
+    });
+}
+
+// Display activity message above the activities list
+function showActivityMessage(message, type = 'success') {
+    const messageElement = document.getElementById('activityMessage');
+    
+    // Remove previous classes
+    messageElement.classList.remove('success', 'error', 'show');
+    
+    // Add new message and type
+    messageElement.textContent = message;
+    messageElement.classList.add(type, 'show');
+    
+    // Auto-hide after 4 seconds
+    setTimeout(() => {
+        messageElement.classList.remove('show');
+    }, 4000);
+}
+
+// Generic function to display messages in any section
+function showSectionMessage(message, type = 'success', sectionId = 'activity') {
+    const messageElementId = sectionId + 'Message';
+    const messageElement = document.getElementById(messageElementId);
+    
+    if (!messageElement) {
+        console.warn(`Message element with id "${messageElementId}" not found`);
+        return;
+    }
+    
+    // Remove previous classes
+    messageElement.classList.remove('success', 'error', 'show');
+    
+    // Add new message and type
+    messageElement.textContent = message;
+    messageElement.classList.add(type, 'show');
+    
+    // Auto-hide after 4 seconds
+    setTimeout(() => {
+        messageElement.classList.remove('show');
+    }, 4000);
 }
 
 async function handleAddActivity(e) {
@@ -241,17 +315,23 @@ async function handleAddActivity(e) {
     const imageFile = document.getElementById('actImage').files[0];
     
     try {
-        let imageUrl = null;
+        let image_url = null;
         
+        // Upload image if provided (non-blocking)
         if (imageFile) {
-            imageUrl = await storageAPI.uploadImage(imageFile);
+            try {
+                image_url = await storageAPI.uploadImage(imageFile, 'activities');
+            } catch (uploadError) {
+                console.warn('Image upload failed, proceeding without image:', uploadError);
+                // Continue without image if upload fails
+            }
         }
         
-        await activitiesAPI.add({
+        await API.activities.create({
             title,
             description,
             date,
-            image_url: imageUrl,
+            image_url,
         });
         
         // Reset form
@@ -260,28 +340,97 @@ async function handleAddActivity(e) {
         // Reload activities
         loadActivities();
         
-        alert('تم إضافة النشاط بنجاح!');
+        showActivityMessage('تم إضافة النشاط بنجاح!', 'success');
     } catch (error) {
         console.error('Error adding activity:', error);
-        alert('حدث خطأ في إضافة النشاط');
+        showActivityMessage('حدث خطأ في إضافة النشاط', 'error');
     }
 }
 
 async function deleteActivity(id) {
+    console.log('Deleting activity with id:', id);
     if (confirm('هل تريد حذف هذا النشاط؟')) {
         try {
-            await activitiesAPI.delete(id);
-            loadActivities();
-            alert('تم حذف النشاط بنجاح!');
+            const result = await API.activities.delete(id);
+            console.log('Delete result:', result);
+            await loadActivities();
+            showActivityMessage('تم حذف النشاط بنجاح!', 'success');
         } catch (error) {
             console.error('Error deleting activity:', error);
-            alert('حدث خطأ في حذف النشاط');
+            showActivityMessage('حدث خطأ في حذف النشاط: ' + error.message, 'error');
         }
     }
 }
 
 function editActivity(id) {
-    alert('ميزة التعديل ستتم إضافتها قريباً');
+    // Find the activity to edit
+    const activity = allActivities.find(a => a.id == id);
+    
+    if (!activity) {
+        showErrorToast('لم يتم العثور على النشاط');
+        return;
+    }
+    
+    // Create edit form
+    const formHTML = `
+        <div class="edit-modal">
+            <div class="edit-modal-content">
+                <h3>تعديل النشاط</h3>
+                <form id="editActivityForm">
+                    <div class="form-group">
+                        <label>العنوان</label>
+                        <input type="text" id="editActTitle" value="${activity.title}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>الوصف</label>
+                        <textarea id="editActDesc" required>${activity.description}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>التاريخ</label>
+                        <input type="date" id="editActDate" value="${activity.date ? activity.date.split('T')[0] : ''}" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEditModal()">إلغاء</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    `;
+    
+    // Show modal
+    document.body.insertAdjacentHTML('beforeend', formHTML);
+    document.getElementById('editActivityForm').addEventListener('submit', (e) => saveActivityEdit(e, id));
+}
+
+async function saveActivityEdit(e, id) {
+    e.preventDefault();
+    
+    const title = document.getElementById('editActTitle').value;
+    const description = document.getElementById('editActDesc').value;
+    const date = document.getElementById('editActDate').value;
+    
+    try {
+        await API.activities.update(id, {
+            title,
+            description,
+            date,
+        });
+        
+        closeEditModal();
+        await loadActivities();
+        showSuccessToast('تم تحديث النشاط بنجاح!');
+    } catch (error) {
+        console.error('Error updating activity:', error);
+        showErrorToast('حدث خطأ في تحديث النشاط: ' + error.message);
+    }
+}
+
+function closeEditModal() {
+    const modal = document.querySelector('.edit-modal');
+    if (modal) {
+        modal.remove();
+    }
 }
 
 // ============================================
@@ -292,7 +441,7 @@ async function loadAnnouncements() {
     const container = document.getElementById('announcementsList');
     
     try {
-        const announcements = await announcementsAPI.getAll();
+        const announcements = await API.announcements.getAll();
         
         if (announcements.length === 0) {
             container.innerHTML = '<p class="loading">لا توجد إعلانات حالياً</p>';
@@ -307,14 +456,34 @@ async function loadAnnouncements() {
                     <p>التصنيف: ${ann.category}</p>
                 </div>
                 <div class="item-actions">
-                    <button class="item-delete" onclick="deleteAnnouncement(${ann.id})">🗑️ حذف</button>
+                    <button class="item-delete" data-action="delete-announcement" data-id="${ann.id}">🗑️ حذف</button>
                 </div>
             </div>
         `).join('');
+        
+        // Add event listeners using event delegation
+        setupAnnouncementActionListeners();
     } catch (error) {
         console.error('Error loading announcements:', error);
         container.innerHTML = '<p class="loading">خطأ في تحميل البيانات</p>';
     }
+}
+
+function setupAnnouncementActionListeners() {
+    const container = document.getElementById('announcementsList');
+    
+    // Remove old listener if it exists
+    const newContainer = container.cloneNode(true);
+    container.parentNode.replaceChild(newContainer, container);
+    
+    newContainer.addEventListener('click', async (e) => {
+        const deleteBtn = e.target.closest('[data-action="delete-announcement"]');
+        
+        if (deleteBtn) {
+            const id = deleteBtn.getAttribute('data-id');
+            await deleteAnnouncement(id);
+        }
+    });
 }
 
 async function handleAddAnnouncement(e) {
@@ -323,20 +492,13 @@ async function handleAddAnnouncement(e) {
     const title = document.getElementById('annTitle').value;
     const content = document.getElementById('annContent').value;
     const category = document.getElementById('annCategory').value;
-    const fileInput = document.getElementById('annFile');
     
     try {
-        let fileUrl = null;
-        
-        if (fileInput.files[0]) {
-            fileUrl = await storageAPI.uploadImage(fileInput.files[0], 'school-files');
-        }
-        
-        await announcementsAPI.add({
+        await API.announcements.create({
             title,
             content,
             category,
-            file_url: fileUrl,
+            file_url: null,
         });
         
         // Reset form
@@ -345,22 +507,24 @@ async function handleAddAnnouncement(e) {
         // Reload announcements
         loadAnnouncements();
         
-        alert('تم نشر الإعلان بنجاح!');
+        showSectionMessage('تم نشر الإعلان بنجاح!', 'success', 'announcement');
     } catch (error) {
         console.error('Error adding announcement:', error);
-        alert('حدث خطأ في نشر الإعلان');
+        showSectionMessage('حدث خطأ في نشر الإعلان', 'error', 'announcement');
     }
 }
 
 async function deleteAnnouncement(id) {
+    console.log('Deleting announcement with id:', id);
     if (confirm('هل تريد حذف هذا الإعلان؟')) {
         try {
-            await announcementsAPI.delete(id);
-            loadAnnouncements();
-            alert('تم حذف الإعلان بنجاح!');
+            const result = await API.announcements.delete(id);
+            console.log('Delete result:', result);
+            await loadAnnouncements();
+            showSectionMessage('تم حذف الإعلان بنجاح!', 'success', 'announcement');
         } catch (error) {
             console.error('Error deleting announcement:', error);
-            alert('حدث خطأ في حذف الإعلان');
+            showSectionMessage('حدث خطأ في حذف الإعلان: ' + error.message, 'error', 'announcement');
         }
     }
 }
@@ -373,7 +537,7 @@ async function loadMeetings() {
     const container = document.getElementById('meetingsList');
     
     try {
-        const meetings = await meetingsAPI.getAll();
+        const meetings = await API.meetings.getAll();
         
         if (meetings.length === 0) {
             container.innerHTML = '<p class="loading">لا توجد اجتماعات مقررة حالياً</p>';
@@ -388,14 +552,34 @@ async function loadMeetings() {
                     <p>📍 ${meeting.location}</p>
                 </div>
                 <div class="item-actions">
-                    <button class="item-delete" onclick="deleteMeeting(${meeting.id})">🗑️ حذف</button>
+                    <button class="item-delete" data-action="delete-meeting" data-id="${meeting.id}">🗑️ حذف</button>
                 </div>
             </div>
         `).join('');
+        
+        // Add event listeners using event delegation
+        setupMeetingActionListeners();
     } catch (error) {
         console.error('Error loading meetings:', error);
         container.innerHTML = '<p class="loading">خطأ في تحميل البيانات</p>';
     }
+}
+
+function setupMeetingActionListeners() {
+    const container = document.getElementById('meetingsList');
+    
+    // Remove old listener if it exists
+    const newContainer = container.cloneNode(true);
+    container.parentNode.replaceChild(newContainer, container);
+    
+    newContainer.addEventListener('click', async (e) => {
+        const deleteBtn = e.target.closest('[data-action="delete-meeting"]');
+        
+        if (deleteBtn) {
+            const id = deleteBtn.getAttribute('data-id');
+            await deleteMeeting(id);
+        }
+    });
 }
 
 async function handleAddMeeting(e) {
@@ -407,7 +591,7 @@ async function handleAddMeeting(e) {
     const description = document.getElementById('meetDesc').value;
     
     try {
-        await meetingsAPI.add({
+        await API.meetings.create({
             subject,
             meeting_date,
             location,
@@ -420,24 +604,149 @@ async function handleAddMeeting(e) {
         // Reload meetings
         loadMeetings();
         
-        alert('تم إضافة الاجتماع بنجاح!');
+        showSectionMessage('تم إضافة الاجتماع بنجاح!', 'success', 'meeting');
     } catch (error) {
         console.error('Error adding meeting:', error);
-        alert('حدث خطأ في إضافة الاجتماع');
+        showSectionMessage('حدث خطأ في إضافة الاجتماع', 'error', 'meeting');
     }
 }
 
 async function deleteMeeting(id) {
+    console.log('Deleting meeting with id:', id);
     if (confirm('هل تريد حذف هذا الاجتماع؟')) {
         try {
-            await meetingsAPI.delete(id);
-            loadMeetings();
-            alert('تم حذف الاجتماع بنجاح!');
+            const result = await API.meetings.delete(id);
+            console.log('Delete result:', result);
+            await loadMeetings();
+            showSectionMessage('تم حذف الاجتماع بنجاح!', 'success', 'meeting');
         } catch (error) {
             console.error('Error deleting meeting:', error);
-            alert('حدث خطأ في حذف الاجتماع');
+            showSectionMessage('حدث خطأ في حذف الاجتماع: ' + error.message, 'error', 'meeting');
         }
     }
+}
+
+// ============================================
+// ============================================
+// CERTIFICATE REQUESTS MANAGEMENT
+// ============================================
+
+async function loadCertificateRequests() {
+    try {
+        const certsList = document.getElementById('certificatesList');
+        certsList.innerHTML = '<div class="loading">جاري التحميل...</div>';
+        
+        const requests = await API.certificates.getAll();
+        
+        if (!requests || requests.length === 0) {
+            certsList.innerHTML = '<p class="no-data">لا توجد طلبات شهادات بعد</p>';
+            return;
+        }
+        
+        // Create table
+        const table = document.createElement('table');
+        table.className = 'certificates-table';
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>الاسم</th>
+                    <th>النسب</th>
+                    <th>رقم المسار</th>
+                    <th>تاريخ الطلب</th>
+                    <th>الحالة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${requests.map(request => `
+                    <tr class="cert-row">
+                        <td class="cert-name">${request.first_name}</td>
+                        <td>${request.last_name}</td>
+                        <td>${request.massar_number}</td>
+                        <td>${formatDate(request.submission_date)}</td>
+                        <td>
+                            <select class="status-select status-${request.status}" data-action="update-cert-status" data-id="${request.id}">
+                                <option value="pending" ${request.status === 'pending' ? 'selected' : ''}>قيد الانتظار</option>
+                                <option value="approved" ${request.status === 'approved' ? 'selected' : ''}>موافق عليه</option>
+                                <option value="completed" ${request.status === 'completed' ? 'selected' : ''}>مكتمل</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" data-action="delete-cert" data-id="${request.id}">حذف</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        `;
+        
+        certsList.innerHTML = '';
+        certsList.appendChild(table);
+        
+        // Add event listeners using event delegation
+        setupCertificateActionListeners(table);
+    } catch (error) {
+        console.error('Error loading certificates:', error);
+        document.getElementById('certificatesList').innerHTML = '<p class="error">خطأ في تحميل الطلبات</p>';
+    }
+}
+
+function setupCertificateActionListeners(table) {
+    // Remove old listeners by cloning and replacing the table
+    const newTable = table.cloneNode(true);
+    table.parentNode.replaceChild(newTable, table);
+    
+    newTable.addEventListener('change', async (e) => {
+        const statusSelect = e.target.closest('[data-action="update-cert-status"]');
+        
+        if (statusSelect) {
+            const id = statusSelect.getAttribute('data-id');
+            const newStatus = statusSelect.value;
+            await updateCertificateStatus(id, newStatus);
+        }
+    });
+    
+    newTable.addEventListener('click', async (e) => {
+        const deleteBtn = e.target.closest('[data-action="delete-cert"]');
+        
+        if (deleteBtn) {
+            const id = deleteBtn.getAttribute('data-id');
+            await deleteCertificateRequest(id);
+        }
+    });
+}
+
+async function updateCertificateStatus(id, newStatus) {
+    try {
+        await API.certificates.update(id, { status: newStatus, updated_at: new Date().toISOString() });
+        loadCertificateRequests();
+        showSectionMessage('تم تحديث حالة الطلب بنجاح!', 'success', 'certificate');
+    } catch (error) {
+        console.error('Error updating certificate:', error);
+        showSectionMessage('خطأ في تحديث الحالة', 'error', 'certificate');
+    }
+}
+
+async function deleteCertificateRequest(id) {
+    if (confirm('هل أنت متأكد من حذف هذا الطلب؟')) {
+        try {
+            await API.certificates.delete(id);
+            loadCertificateRequests();
+            showSectionMessage('تم حذف الطلب بنجاح!', 'success', 'certificate');
+        } catch (error) {
+            console.error('Error deleting certificate:', error);
+            showSectionMessage('خطأ في حذف الطلب', 'error', 'certificate');
+        }
+    }
+}
+
+function getStatusLabel(status) {
+    const labels = {
+        'pending': '⏳ قيد الانتظار',
+        'approved': '✅ موافق عليه',
+        'rejected': '❌ مرفوض',
+        'completed': '✓ مكتمل'
+    };
+    return labels[status] || status;
 }
 
 // ============================================
@@ -452,3 +761,159 @@ function formatDate(dateString) {
 function truncateText(text, length) {
     return text.length > length ? text.substring(0, length) + '...' : text;
 }
+
+// ============================================
+// CONTACTS MANAGEMENT
+// ============================================
+
+async function loadContactMessages() {
+    const container = document.getElementById('contactsList');
+    
+    if (!container) {
+        console.error('Contacts container not found!');
+        return;
+    }
+    
+    try {
+        console.log('Starting to load contacts...');
+        console.log('API object:', typeof API);
+        console.log('API.contacts:', typeof API?.contacts);
+        console.log('API.contacts.getAll:', typeof API?.contacts?.getAll);
+        
+        const messages = await API.contacts.getAll();
+        
+        console.log('Loaded contacts:', messages);
+        console.log('Number of messages:', messages ? messages.length : 'null');
+        
+        // Store messages globally for management
+        window.allContacts = messages || [];
+        
+        if (!messages || messages.length === 0) {
+            console.log('No messages found');
+            container.innerHTML = '<p class="loading">لا توجد رسائل حالياً - تأكد من إنشاء جدول contacts في Supabase</p>';
+            return;
+        }
+        
+        console.log('Rendering', messages.length, 'messages');
+        renderContactMessages(messages);
+        setupContactEventListeners();
+        
+    } catch (error) {
+        console.error('Error loading contact messages:', error);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        container.innerHTML = `<p class="error">خطأ في تحميل الرسائل: ${error.message}</p>`;
+    }
+}
+
+function renderContactMessages(messages) {
+    const container = document.getElementById('contactsList');
+    
+    if (messages.length === 0) {
+        container.innerHTML = '<p class="loading">لا توجد رسائل</p>';
+        return;
+    }
+    
+    container.innerHTML = messages.map(msg => `
+        <div class="contact-card ${!msg.is_read ? 'unread' : 'read'}">
+            <div class="contact-header">
+                <div class="contact-info">
+                    <h4>${msg.name}</h4>
+                    <p class="contact-email">${msg.email}</p>
+                </div>
+                <span class="contact-date">${formatDate(msg.created_at)}</span>
+            </div>
+            <div class="contact-subject">
+                <strong>الموضوع:</strong> ${msg.subject}
+            </div>
+            ${msg.phone ? `<div class="contact-phone"><strong>الهاتف:</strong> ${msg.phone}</div>` : ''}
+            <div class="contact-message">
+                <strong>الرسالة:</strong>
+                <p>${msg.message}</p>
+            </div>
+            <div class="contact-actions">
+                <button class="btn btn-small mark-read-btn" data-id="${msg.id}" data-read="${msg.is_read}">
+                    ${msg.is_read ? '✓ مقروء' : '📧 وضع علامة مقروء'}
+                </button>
+                <button class="btn btn-small btn-danger delete-contact-btn" data-id="${msg.id}">
+                    🗑️ حذف
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function setupContactEventListeners() {
+    // Mark as read buttons
+    document.querySelectorAll('.mark-read-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const contactId = this.getAttribute('data-id');
+            const isRead = this.getAttribute('data-read') === 'true';
+            
+            try {
+                await API.contacts.update(contactId, { is_read: !isRead });
+                loadContactMessages();
+            } catch (error) {
+                console.error('Error updating contact:', error);
+                new Toast('خطأ في تحديث الرسالة', 'error');
+            }
+        });
+    });
+    
+    // Delete buttons
+    document.querySelectorAll('.delete-contact-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const contactId = this.getAttribute('data-id');
+            
+            if (!confirm('هل تريد حذف هذه الرسالة؟')) return;
+            
+            try {
+                await API.contacts.delete(contactId);
+                new Toast('تم حذف الرسالة بنجاح', 'success');
+                loadContactMessages();
+            } catch (error) {
+                console.error('Error deleting contact:', error);
+                new Toast('خطأ في حذف الرسالة', 'error');
+            }
+        });
+    });
+    
+    // Mark all as read
+    const markAllBtn = document.getElementById('markAllReadBtn');
+    if (markAllBtn) {
+        markAllBtn.addEventListener('click', async function() {
+            try {
+                const unreadMessages = window.allContacts.filter(m => !m.is_read);
+                
+                for (const msg of unreadMessages) {
+                    await API.contacts.update(msg.id, { is_read: true });
+                }
+                
+                new Toast('تم وضع علامة على جميع الرسائل', 'success');
+                loadContactMessages();
+            } catch (error) {
+                console.error('Error marking all as read:', error);
+                new Toast('خطأ في التحديث', 'error');
+            }
+        });
+    }
+    
+    // Filter by status
+    const filterSelect = document.getElementById('contactsStatusFilter');
+    if (filterSelect) {
+        filterSelect.addEventListener('change', function() {
+            const filterValue = this.value;
+            let filtered = window.allContacts;
+            
+            if (filterValue === 'read') {
+                filtered = window.allContacts.filter(m => m.is_read);
+            } else if (filterValue === 'unread') {
+                filtered = window.allContacts.filter(m => !m.is_read);
+            }
+            
+            renderContactMessages(filtered);
+            setupContactEventListeners();
+        });
+    }
+}
+

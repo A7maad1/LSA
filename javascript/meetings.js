@@ -31,7 +31,7 @@ async function loadMeetingsData() {
     try {
         container.innerHTML = '<p class="loading">جاري تحميل الاجتماعات...</p>';
         
-        allMeetings = await meetingsAPI.getAll();
+        allMeetings = await API.meetings.getAll();
         
         // Sort by upcoming meetings first
         allMeetings.sort((a, b) => new Date(a.meeting_date) - new Date(b.meeting_date));

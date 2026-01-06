@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Database Connection</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+        pre { background: #f8f9fa; padding: 15px; border-radius: 4px; overflow-x: auto; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>اختبار اتصال قاعدة البيانات</h1>
+        
+        <button onclick="testConnection()">اختبر الاتصال</button>
+        <button onclick="getUsers()">عرض المستخدمين</button>
+        <button onclick="testLogin()">اختبر تسجيل الدخول</button>
+        <button onclick="insertTestUser()">أدرج مستخدم اختبار</button>
+        
+        <h2>النتائج:</h2>
+        <pre id="results">في انتظار الاختبار...</pre>
+    </div>
+
+    <script src="javascript/supabase-client.js"></script>
+    <script>
+        const resultsDiv = document.getElementById('results');
+
+        async function testConnection() {
+            resultsDiv.textContent = 'جاري الاختبار...';
+            try {
+                const result = await supabase.request('GET', '/');
+                resultsDiv.innerHTML = '<span class="success">✓ الاتصال ناجح!</span>\n' + JSON.stringify(result, null, 2);
+            } catch (error) {
+                resultsDiv.innerHTML = '<span class="error">✗ خطأ في الاتصال:</span>\n' + error.message;
+            }
+        }
+
+        async function getUsers() {
+            resultsDiv.textContent = 'جاري جلب المستخدمين...';
+            try {
+                const users = await supabase.table('users').select('*');
+                resultsDiv.innerHTML = '<span class="success">✓ تم جلب المستخدمين:</span>\n' + JSON.stringify(users, null, 2);
+            } catch (error) {
+                resultsDiv.innerHTML = '<span class="error">✗ خطأ:</span>\n' + error.message;
+            }
+        }
+
+        async function testLogin() {
+            resultsDiv.textContent = 'جاري اختبار تسجيل الدخول...';
+            try {
+                const user = await authAPI.signIn('admin@school.com', 'Admin@123');
+                resultsDiv.innerHTML = '<span class="success">✓ تسجيل دخول ناجح:</span>\n' + JSON.stringify(user, null, 2);
+            } catch (error) {
+                resultsDiv.innerHTML = '<span class="error">✗ خطأ:</span>\n' + error.message;
+            }
+        }
+
+        async function insertTestUser() {
+            resultsDiv.textContent = 'جاري إدراج مستخدم اختبار...';
+            try {
+                const result = await supabase.table('users').insert({
+                    email: 'test@school.com',
+                    password: 'Test@123',
+                    full_name: 'مستخدم اختبار',
+                    role: 'teacher'
+                });
+                resultsDiv.innerHTML = '<span class="success">✓ تم إدراج المستخدم:</span>\n' + JSON.stringify(result, null, 2);
+            } catch (error) {
+                resultsDiv.innerHTML = '<span class="error">✗ خطأ:</span>\n' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

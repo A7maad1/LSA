@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار نظام الرسائل</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #1A73E8;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 4px solid #1A73E8;
+        }
+        
+        .test-section h2 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            background: #1A73E8;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-family: 'Cairo', Arial, sans-serif;
+        }
+        
+        button:hover {
+            background: #1557B0;
+        }
+        
+        button.secondary {
+            background: #6c757d;
+        }
+        
+        button.secondary:hover {
+            background: #5a6268;
+        }
+        
+        .output {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        
+        .output.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .output.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .output.info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Cairo', Arial, sans-serif;
+            font-size: 14px;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #1A73E8;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 اختبار نظام الرسائل</h1>
+        
+        <!-- 1. API Connection Test -->
+        <div class="test-section">
+            <h2>1️⃣ اختبار الاتصال بـ API</h2>
+            <p>تحقق من أن API وقاعدة البيانات تعملان بشكل صحيح</p>
+            <button onclick="testAPIConnection()">اختبار الاتصال</button>
+            <div id="apiOutput"></div>
+        </div>
+        
+        <!-- 2. Table Existence Test -->
+        <div class="test-section">
+            <h2>2️⃣ التحقق من وجود جدول Contacts</h2>
+            <p>تحقق من أن جدول contacts موجود في Supabase</p>
+            <button onclick="testTableExistence()">التحقق من الجدول</button>
+            <div id="tableOutput"></div>
+        </div>
+        
+        <!-- 3. Test Insert -->
+        <div class="test-section">
+            <h2>3️⃣ اختبار إدراج رسالة جديدة</h2>
+            <form id="testForm" onsubmit="testInsertMessage(event)">
+                <div class="form-group">
+                    <label for="testName">الاسم:</label>
+                    <input type="text" id="testName" value="اختبار" required>
+                </div>
+                <div class="form-group">
+                    <label for="testEmail">البريد الإلكتروني:</label>
+                    <input type="email" id="testEmail" value="test@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="testSubject">الموضوع:</label>
+                    <input type="text" id="testSubject" value="رسالة اختبار" required>
+                </div>
+                <div class="form-group">
+                    <label for="testMessage">الرسالة:</label>
+                    <textarea id="testMessage" required>هذه رسالة اختبار لتحقق من أن النظام يعمل بشكل صحيح</textarea>
+                </div>
+                <button type="submit">إدراج رسالة اختبار</button>
+            </form>
+            <div id="insertOutput"></div>
+        </div>
+        
+        <!-- 4. Test Retrieve -->
+        <div class="test-section">
+            <h2>4️⃣ استرجاع جميع الرسائل</h2>
+            <p>حاول استرجاع جميع الرسائل من قاعدة البيانات</p>
+            <button onclick="testRetrieveMessages()">استرجاع الرسائل</button>
+            <button class="secondary" onclick="clearAllMessages()" style="background: #dc3545;">حذف جميع الرسائل (للاختبار فقط)</button>
+            <div id="retrieveOutput"></div>
+        </div>
+        
+        <!-- 5. Browser Console -->
+        <div class="test-section">
+            <h2>5️⃣ معلومات المتصفح</h2>
+            <button onclick="showConsoleInfo()">عرض معلومات Console</button>
+            <button class="secondary" onclick="openDevTools()">فتح أدوات المطور (F12)</button>
+            <div id="consoleOutput"></div>
+        </div>
+    </div>
+
+    <script src="javascript/supabase-client.js"></script>
+    <script>
+        function log(outputId, message, type = 'info') {
+            const output = document.getElementById(outputId);
+            output.className = 'output ' + type;
+            output.textContent = message;
+        }
+        
+        async function testAPIConnection() {
+            log('apiOutput', 'جاري الاختبار...', 'info');
+            
+            try {
+                console.log('Testing API Connection...');
+                console.log('API object:', API);
+                console.log('API.contacts:', API.contacts);
+                
+                if (!API || !API.contacts) {
+                    throw new Error('API object is not defined or API.contacts is missing');
+                }
+                
+                log('apiOutput', '✅ نجح! API موجود وقابل للاستخدام\n\nAPI.contacts methods:\n' + Object.keys(API.contacts).join('\n'), 'success');
+            } catch (error) {
+                log('apiOutput', '❌ خطأ: ' + error.message, 'error');
+            }
+        }
+        
+        async function testTableExistence() {
+            log('tableOutput', 'جاري الاختبار...', 'info');
+            
+            try {
+                const result = await API.contacts.getAll();
+                log('tableOutput', '✅ نجح! جدول contacts موجود\n\nعدد الرسائل: ' + (result ? result.length : 0), 'success');
+            } catch (error) {
+                log('tableOutput', '❌ خطأ - جدول contacts قد لا يكون موجوداً:\n' + error.message, 'error');
+            }
+        }
+        
+        async function testInsertMessage(event) {
+            event.preventDefault();
+            log('insertOutput', 'جاري الإدراج...', 'info');
+            
+            try {
+                const contactData = {
+                    name: document.getElementById('testName').value,
+                    email: document.getElementById('testEmail').value,
+                    phone: '',
+                    subject: document.getElementById('testSubject').value,
+                    message: document.getElementById('testMessage').value
+                };
+                
+                console.log('Inserting:', contactData);
+                const result = await API.contacts.insert(contactData);
+                
+                log('insertOutput', '✅ نجح! تم إدراج الرسالة بنجاح\n\nمعرف الرسالة: ' + (result.id || 'بدون ID'), 'success');
+            } catch (error) {
+                log('insertOutput', '❌ خطأ في الإدراج:\n' + error.message, 'error');
+            }
+        }
+        
+        async function testRetrieveMessages() {
+            log('retrieveOutput', 'جاري الاسترجاع...', 'info');
+            
+            try {
+                const messages = await API.contacts.getAll();
+                
+                if (!messages || messages.length === 0) {
+                    log('retrieveOutput', '⚠️ لا توجد رسائل في قاعدة البيانات\n\nجرب إدراج رسالة اختبار أولاً', 'warning');
+                    return;
+                }
+                
+                let output = `✅ تم استرجاع ${messages.length} رسالة(رسائل)\n\n`;
+                messages.forEach((msg, index) => {
+                    output += `\nرسالة ${index + 1}:\n`;
+                    output += `━━━━━━━━━━━━━━━━━\n`;
+                    output += `الاسم: ${msg.name}\n`;
+                    output += `البريد: ${msg.email}\n`;
+                    output += `الموضوع: ${msg.subject}\n`;
+                    output += `مقروء: ${msg.is_read ? 'نعم' : 'لا'}\n`;
+                    output += `التاريخ: ${new Date(msg.created_at).toLocaleString('ar-EG')}\n`;
+                });
+                
+                log('retrieveOutput', output, 'success');
+            } catch (error) {
+                log('retrieveOutput', '❌ خطأ في الاسترجاع:\n' + error.message, 'error');
+            }
+        }
+        
+        async function clearAllMessages() {
+            if (!confirm('هل تريد حذف جميع الرسائل؟ هذا لا يمكن التراجع عنه!')) {
+                return;
+            }
+            
+            try {
+                const messages = await API.contacts.getAll();
+                
+                for (const msg of messages) {
+                    await API.contacts.delete(msg.id);
+                }
+                
+                log('retrieveOutput', '✅ تم حذف جميع الرسائل بنجاح', 'success');
+            } catch (error) {
+                log('retrieveOutput', '❌ خطأ في الحذف:\n' + error.message, 'error');
+            }
+        }
+        
+        function showConsoleInfo() {
+            const info = `
+Browser Information:
+═══════════════════════
+User Agent: ${navigator.userAgent}
+Language: ${navigator.language}
+Platform: ${navigator.platform}
+
+API Information:
+═══════════════════════
+API defined: ${typeof API !== 'undefined'}
+API.contacts defined: ${typeof API?.contacts !== 'undefined'}
+Supabase URL: ${SUPABASE_URL || 'Not defined'}
+SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY ? 'Defined' : 'Not defined'}
+
+LocalStorage:
+═══════════════════════
+sb_token: ${localStorage.getItem('sb_token') ? 'Exists' : 'Not found'}
+sb_user: ${localStorage.getItem('sb_user') ? 'Exists' : 'Not found'}
+
+👉 افتح أدوات المطور (F12) وانظر إلى Console لرسائل الخطأ التفصيلية
+            `;
+            log('consoleOutput', info, 'info');
+        }
+        
+        function openDevTools() {
+            alert('اضغط F12 أو Ctrl+Shift+I لفتح أدوات المطور\nثم انقر على تبويب Console لرؤية الرسائل التفصيلية');
+        }
+        
+        // Initial connection test on load
+        window.addEventListener('load', () => {
+            testAPIConnection();
+        });
+    </script>
+</body>
+</html>

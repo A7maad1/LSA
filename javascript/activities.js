@@ -43,7 +43,7 @@ async function loadActivitiesData() {
     try {
         container.innerHTML = '<p class="loading">جاري تحميل الأنشطة...</p>';
         
-        allActivities = await activitiesAPI.getAll();
+        allActivities = await API.activities.getAll();
         filteredActivities = [...allActivities];
         
         if (allActivities.length === 0) {

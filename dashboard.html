@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة الإدارة - ثانوية صلاح الدين الأيوبي</title>
-    <link rel="stylesheet" href="/css/styles-dynamic.css">
-    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="css/styles-dynamic.css">
+    <link rel="stylesheet" href="css/dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <script src="javascript/toast.js"></script>
+    <script src="javascript/supabase-client.js"></script>
+    <script src="javascript/dashboard.js"></script>
 </head>
 <body>
     <!-- LOGIN PAGE (Initially Shown) -->
@@ -92,6 +95,12 @@
                     <button class="nav-item" data-section="meetings">
                         🗓️ إدارة الاجتماعات
                     </button>
+                    <button class="nav-item" data-section="certificates">
+                        📜 طلبات الشهادات
+                    </button>
+                    <button class="nav-item" data-section="contacts">
+                        ✉️ رسائل التواصل
+                    </button>
                 </nav>
             </aside>
 
@@ -132,6 +141,7 @@
                     
                     <div class="items-list-container">
                         <h3>الأنشطة الحالية</h3>
+                        <div id="activityMessage" class="activity-message"></div>
                         <div id="activitiesList" class="items-list">
                             <div class="loading">جاري التحميل...</div>
                         </div>
@@ -178,6 +188,7 @@
                     
                     <div class="items-list-container">
                         <h3>الإعلانات الحالية</h3>
+                        <div id="announcementMessage" class="activity-message"></div>
                         <div id="announcementsList" class="items-list">
                             <div class="loading">جاري التحميل...</div>
                         </div>
@@ -219,7 +230,51 @@
                     
                     <div class="items-list-container">
                         <h3>الاجتماعات المقررة</h3>
+                        <div id="meetingMessage" class="activity-message"></div>
                         <div id="meetingsList" class="items-list">
+                            <div class="loading">جاري التحميل...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CERTIFICATES REQUESTS SECTION -->
+                <section id="certificatesSection" class="dashboard-section">
+                    <h2>طلبات الشهادات المدرسية</h2>
+                    
+                    <div class="certificate-filters">
+                        <select id="certStatusFilter" class="filter-select">
+                            <option value="">-- جميع الحالات --</option>
+                            <option value="pending">قيد الانتظار</option>
+                            <option value="approved">موافق عليه</option>
+                            <option value="rejected">مرفوض</option>
+                            <option value="completed">مكتمل</option>
+                        </select>
+                    </div>
+
+                    <div class="certificate-requests-container">
+                        <div id="certificateMessage" class="activity-message"></div>
+                        <div id="certificatesList" class="certificate-requests-list">
+                            <div class="loading">جاري التحميل...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CONTACTS MESSAGES SECTION -->
+                <section id="contactsSection" class="dashboard-section">
+                    <h2>رسائل التواصل</h2>
+                    
+                    <div class="contacts-filters">
+                        <button id="markAllReadBtn" class="btn btn-small">وضع علامة على الكل كمقروء</button>
+                        <select id="contactsStatusFilter" class="filter-select">
+                            <option value="">-- جميع الرسائل --</option>
+                            <option value="unread">غير مقروء</option>
+                            <option value="read">مقروء</option>
+                        </select>
+                    </div>
+
+                    <div class="contacts-container">
+                        <div id="contactsMessage" class="activity-message"></div>
+                        <div id="contactsList" class="contacts-list">
                             <div class="loading">جاري التحميل...</div>
                         </div>
                     </div>
@@ -228,8 +283,5 @@
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="/javascript/supabase-client.js"></script>
-    <script src="/javascript/dashboard.js"></script>
 </body>
 </html>

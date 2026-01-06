@@ -48,25 +48,38 @@ async function handleContactFormSubmit(e) {
         submitBtn.disabled = true;
         submitBtn.textContent = 'جاري الإرسال...';
         
-        // In a real scenario, you would send this to your backend
-        // For now, we'll just show a success message
-        console.log('Contact form data:', {
+        // Check if API is available
+        if (typeof API === 'undefined' || !API.contacts) {
+            throw new Error('نظام الرسائل غير متاح في الوقت الحالي');
+        }
+        
+        // Save to Supabase
+        const contactData = {
             name,
             email,
             phone,
             subject,
-            message,
-            submittedAt: new Date().toISOString()
-        });
+            message
+        };
         
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        console.log('Sending contact data:', contactData);
         
-        // Show success message
-        showSuccessMessage();
+        const result = await API.contacts.insert(contactData);
         
-        // Reset form
-        document.getElementById('contactForm').reset();
+        console.log('API Response:', result);
+        
+        if (result) {
+            // Show success message
+            showSuccessMessage();
+            
+            // Reset form
+            document.getElementById('contactForm').reset();
+            
+            // Show toast notification
+            new Toast('تم إرسال الرسالة بنجاح! سنتواصل معك قريباً.', 'success');
+        } else {
+            throw new Error('لم يتم حفظ الرسالة');
+        }
         
         // Restore button
         submitBtn.disabled = false;
@@ -74,7 +87,13 @@ async function handleContactFormSubmit(e) {
         
     } catch (error) {
         console.error('Error submitting form:', error);
-        alert('حدث خطأ في إرسال الرسالة. يرجى المحاولة مرة أخرى.');
+        const errorMessage = error.message || 'حدث خطأ في إرسال الرسالة. يرجى المحاولة مرة أخرى.';
+        new Toast(errorMessage, 'error');
+        
+        // Restore button
+        const submitBtn = e.target.querySelector('button');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'إرسال الرسالة';
     }
 }
 
