@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Save to Supabase
             console.log('Saving to database...');
-            const result = await API.contacts.insert({
+            const result = await API.contacts.create({
                 name,
                 email,
                 phone: '',

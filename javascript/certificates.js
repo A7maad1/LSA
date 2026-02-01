@@ -22,6 +22,7 @@ async function handleCertificateSubmit(e) {
         last_name: document.getElementById('certLastName').value,
         massar_number: document.getElementById('certMassarNumber').value,
         submission_date: document.getElementById('certDate').value,
+        birth_date: document.getElementById('certBirthDate').value,
         status: 'pending',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()

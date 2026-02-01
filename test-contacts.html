@@ -272,7 +272,7 @@
                 };
                 
                 console.log('Inserting:', contactData);
-                const result = await API.contacts.insert(contactData);
+                const result = await API.contacts.create(contactData);
                 
                 log('insertOutput', '✅ نجح! تم إدراج الرسالة بنجاح\n\nمعرف الرسالة: ' + (result.id || 'بدون ID'), 'success');
             } catch (error) {

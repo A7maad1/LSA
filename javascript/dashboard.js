@@ -182,7 +182,7 @@ async function loadActivities() {
             <div class="item">
                 <div class="item-info">
                     <h4>${activity.title}</h4>
-                    <p>📅 ${formatDate(activity.date)}</p>
+                    <p>📅 ${activity.date}</p>
                     <p>${truncateText(activity.description, 80)}</p>
                 </div>
                 <div class="item-actions">
@@ -409,7 +409,7 @@ async function loadAnnouncements() {
             <div class="item">
                 <div class="item-info">
                     <h4>${ann.title}</h4>
-                    <p>📅 ${formatDate(ann.created_at)}</p>
+                    <p>📅 ${ann.created_at}</p>
                     <p>التصنيف: ${ann.category}</p>
                 </div>
                 <div class="item-actions">
@@ -511,6 +511,7 @@ async function loadCertificateRequests() {
                     <th>الاسم</th>
                     <th>النسب</th>
                     <th>رقم المسار</th>
+                    <th>تاريخ الميلاد</th>
                     <th>تاريخ الطلب</th>
                     <th>الحالة</th>
                     <th>الإجراءات</th>
@@ -522,7 +523,8 @@ async function loadCertificateRequests() {
                         <td class="cert-name">${request.first_name}</td>
                         <td>${request.last_name}</td>
                         <td>${request.massar_number}</td>
-                        <td>${formatDate(request.submission_date)}</td>
+                        <td>${request.birth_date}</td>
+                        <td>${request.submission_date}</td>
                         <td>
                             <select class="status-select status-${request.status}" data-action="update-cert-status" data-id="${request.id}">
                                 <option value="pending" ${request.status === 'pending' ? 'selected' : ''}>قيد الانتظار</option>
@@ -576,7 +578,7 @@ function setupCertificateActionListeners(table) {
 
 async function updateCertificateStatus(id, newStatus) {
     try {
-        await API.certificates.update(id, { status: newStatus, updated_at: new Date().toISOString() });
+        await API.certificates.updateStatus(id, newStatus);
         loadCertificateRequests();
         showSectionMessage('تم تحديث حالة الطلب بنجاح!', 'success', 'certificate');
     } catch (error) {
@@ -611,11 +613,6 @@ function getStatusLabel(status) {
 // ============================================
 // UTILITY FUNCTIONS
 // ============================================
-
-function formatDate(dateString) {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('ar-EG', options);
-}
 
 function truncateText(text, length) {
     return text.length > length ? text.substring(0, length) + '...' : text;
@@ -680,7 +677,7 @@ function renderContactMessages(messages) {
                     <h4>${msg.name}</h4>
                     <p class="contact-email">${msg.email}</p>
                 </div>
-                <span class="contact-date">${formatDate(msg.created_at)}</span>
+                <span class="contact-date">${msg.created_at}</span>
             </div>
             <div class="contact-subject">
                 <strong>الموضوع:</strong> ${msg.subject}
@@ -692,7 +689,7 @@ function renderContactMessages(messages) {
             </div>
             <div class="contact-actions">
                 <button class="btn btn-small mark-read-btn" data-id="${msg.id}" data-read="${msg.is_read}">
-                    ${msg.is_read ? '✓ مقروء' : '📧 وضع علامة مقروء'}
+                    ${msg.is_read ? '✓ مقروء' : '� وضع علامة مقروء'}
                 </button>
                 <button class="btn btn-small btn-danger delete-contact-btn" data-id="${msg.id}">
                     🗑️ حذف
@@ -707,10 +704,9 @@ function setupContactEventListeners() {
     document.querySelectorAll('.mark-read-btn').forEach(btn => {
         btn.addEventListener('click', async function() {
             const contactId = this.getAttribute('data-id');
-            const isRead = this.getAttribute('data-read') === 'true';
             
             try {
-                await API.contacts.update(contactId, { is_read: !isRead });
+                await API.contacts.markAsRead(contactId);
                 loadContactMessages();
             } catch (error) {
                 console.error('Error updating contact:', error);
@@ -802,7 +798,7 @@ async function loadGallery() {
                 <div class="gallery-item-info">
                     <h4>${item.title}</h4>
                     ${item.description ? `<p>${item.description}</p>` : ''}
-                    <p class="gallery-item-date">📅 ${formatDate(item.created_at)}</p>
+                    <p class="gallery-item-date">📅 ${item.created_at}</p>
                 </div>
                 <div class="item-actions">
                     <button class="item-delete" data-action="delete-gallery" data-id="${item.id}">🗑️ حذف</button>

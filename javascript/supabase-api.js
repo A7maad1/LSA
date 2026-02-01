@@ -371,6 +371,7 @@ const certificatesAPI = {
                     last_name: String(certificate.last_name).substring(0, 100),
                     massar_number: String(certificate.massar_number).substring(0, 50),
                     submission_date: certificate.submission_date,
+                    birth_date: certificate.birth_date,
                     status: 'pending',
                     notes: certificate.notes ? String(certificate.notes).substring(0, 1000) : null,
                     created_at: new Date().toISOString(),
