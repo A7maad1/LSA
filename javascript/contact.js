@@ -1,15 +1,22 @@
 // ============================================
 // CONTACT.JS - CONTACT PAGE FUNCTIONALITY
+// Handles contact form submission and validation
 // ============================================
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeContactPage();
 });
 
+/**
+ * Initialize contact page
+ */
 function initializeContactPage() {
     setupEventListeners();
 }
 
+/**
+ * Setup event listeners for contact page
+ */
 function setupEventListeners() {
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
@@ -27,24 +34,74 @@ function setupEventListeners() {
     }
 }
 
+/**
+ * Handle contact form submission
+ * @param {Event} e - Form submission event
+ */
 async function handleContactFormSubmit(e) {
     e.preventDefault();
     
-    const name = document.getElementById('contactName').value.trim();
-    const email = document.getElementById('contactEmail').value.trim();
-    const phone = document.getElementById('contactPhone').value.trim();
-    const subject = document.getElementById('contactSubject').value.trim();
-    const message = document.getElementById('contactMessage').value.trim();
+    // Get form values
+    const name = document.getElementById('contactName')?.value.trim() || '';
+    const email = document.getElementById('contactEmail')?.value.trim() || '';
+    const phone = document.getElementById('contactPhone')?.value.trim() || '';
+    const subject = document.getElementById('contactSubject')?.value.trim() || '';
+    const message = document.getElementById('contactMessage')?.value.trim() || '';
     
-    // Validation
-    if (!validateForm(name, email, phone, subject, message)) {
+    // Validate form using ValidationUtils
+    const rules = {
+        name: {
+            required: true,
+            minLength: AppConfig.validation.name.minLength,
+            maxLength: AppConfig.validation.name.maxLength
+        },
+        email: {
+            required: true,
+            type: 'email',
+            maxLength: AppConfig.validation.email.maxLength
+        },
+        phone: {
+            required: false,
+            type: 'phone'
+        },
+        subject: {
+            required: true,
+            minLength: 3,
+            maxLength: AppConfig.validation.title.maxLength
+        },
+        message: {
+            required: true,
+            minLength: AppConfig.validation.message.minLength,
+            maxLength: AppConfig.validation.message.maxLength
+        }
+    };
+
+    const { isValid, errors } = ValidationUtils.validateForm(
+        { name, email, phone, subject, message },
+        rules
+    );
+
+    if (!isValid) {
+        const errorMsg = ValidationUtils.getErrorMessage(errors);
+        new Toast(errorMsg, 'error');
+        displayValidationErrors(errors);
         return;
     }
     
+    await submitContactForm(e.target, { name, email, phone, subject, message });
+}
+
+/**
+ * Submit contact form to API
+ * @param {HTMLFormElement} form - Form element
+ * @param {object} contactData - Contact form data
+ */
+async function submitContactForm(form, contactData) {
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+
     try {
         // Show loading state
-        const submitBtn = e.target.querySelector('button');
-        const originalText = submitBtn.textContent;
         submitBtn.disabled = true;
         submitBtn.textContent = 'جاري الإرسال...';
         
@@ -54,49 +111,56 @@ async function handleContactFormSubmit(e) {
         }
         
         // Save to Supabase
-        const contactData = {
-            name,
-            email,
-            phone,
-            subject,
-            message
-        };
-        
-        console.log('Sending contact data:', contactData);
-        
-        const result = await API.contacts.insert(contactData);
-        
-        console.log('API Response:', result);
+        const result = await API.contacts.create(contactData);
         
         if (result) {
             // Show success message
-            showSuccessMessage();
+            new Toast('تم إرسال الرسالة بنجاح! سنتواصل معك قريباً.', 'success');
             
             // Reset form
-            document.getElementById('contactForm').reset();
-            
-            // Show toast notification
-            new Toast('تم إرسال الرسالة بنجاح! سنتواصل معك قريباً.', 'success');
+            form.reset();
         } else {
             throw new Error('لم يتم حفظ الرسالة');
         }
         
+    } catch (error) {
+        console.error('Error submitting contact form:', error);
+        const errorMessage = error.message || AppConfig.getErrorMessage('networkError');
+        new Toast(errorMessage, 'error');
+    } finally {
         // Restore button
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
-        
-    } catch (error) {
-        console.error('Error submitting form:', error);
-        const errorMessage = error.message || 'حدث خطأ في إرسال الرسالة. يرجى المحاولة مرة أخرى.';
-        new Toast(errorMessage, 'error');
-        
-        // Restore button
-        const submitBtn = e.target.querySelector('button');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'إرسال الرسالة';
     }
 }
 
+/**
+ * Display validation errors under form fields
+ * @param {object} errors - Validation errors
+ */
+function displayValidationErrors(errors) {
+    // Clear previous errors
+    document.querySelectorAll('.form-error').forEach(el => el.remove());
+
+    // Display new errors
+    for (const [field, message] of Object.entries(errors)) {
+        const input = document.getElementById(`contact${field.charAt(0).toUpperCase() + field.slice(1)}`);
+        if (input) {
+            const errorEl = document.createElement('div');
+            errorEl.className = 'form-error';
+            errorEl.textContent = message;
+            errorEl.style.color = 'var(--error-color, #E74C3C)';
+            errorEl.style.fontSize = '12px';
+            errorEl.style.marginTop = '4px';
+            input.parentElement?.appendChild(errorEl);
+        }
+    }
+}
+
+/**
+ * Validate contact form (deprecated - use ValidationUtils instead)
+ * @deprecated Use ValidationUtils.validateForm instead
+ */
 function validateForm(name, email, phone, subject, message) {
     const messageContainer = document.getElementById('formMessage');
     

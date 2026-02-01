@@ -265,69 +265,6 @@ const meetingsAPI = {
 };
 
 // ============================================
-// SUPABASE STORAGE FUNCTIONS
-// ============================================
-
-const storageAPI = {
-    // Upload image to storage
-    async uploadImage(file, bucket = 'school-images') {
-        try {
-            const fileName = `${Date.now()}_${file.name}`;
-            const formData = new FormData();
-            formData.append('file', file);
-
-            const response = await fetch(
-                `${SUPABASE_URL}/storage/v1/object/${bucket}/${fileName}`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                    },
-                    body: formData,
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error('Upload failed');
-            }
-
-            // Return public URL
-            return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${fileName}`;
-        } catch (error) {
-            console.error('Error uploading image:', error);
-            throw error;
-        }
-    },
-
-    // Delete image from storage
-    async deleteImage(fileUrl, bucket = 'school-images') {
-        try {
-            const fileName = fileUrl.split('/').pop();
-            const response = await fetch(
-                `${SUPABASE_URL}/storage/v1/object/${bucket}/${fileName}`,
-                {
-                    method: 'DELETE',
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                    },
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error('Delete failed');
-            }
-
-            return true;
-        } catch (error) {
-            console.error('Error deleting image:', error);
-            throw error;
-        }
-    },
-};
-
-// ============================================
 // AUTHENTICATION FUNCTIONS
 // ============================================
 
@@ -411,7 +348,6 @@ if (typeof module !== 'undefined' && module.exports) {
         activitiesAPI,
         announcementsAPI,
         meetingsAPI,
-        storageAPI,
         authAPI,
     };
 }

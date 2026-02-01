@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase Auth Diagnostics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #4ec9b0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #007acc;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #569cd6;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .section {
+            background: #252526;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007acc;
+            border-radius: 4px;
+        }
+        
+        button {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        button:hover {
+            background: #005a9e;
+        }
+        
+        .output {
+            background: #1e1e1e;
+            border: 1px solid #3e3e42;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 4px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+        
+        .success {
+            color: #4ec9b0;
+        }
+        
+        .error {
+            color: #f48771;
+        }
+        
+        .warning {
+            color: #dcdcaa;
+        }
+        
+        .info {
+            color: #9cdcfe;
+        }
+        
+        code {
+            background: #1e1e1e;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #ce9178;
+        }
+        
+        pre {
+            background: #1e1e1e;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            border: 1px solid #3e3e42;
+        }
+        
+        .button-group {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Supabase Authentication Diagnostics</h1>
+        
+        <div class="section">
+            <h2>1️⃣ Check Auth Extension</h2>
+            <p>Verify that required extensions are installed in Supabase</p>
+            <div class="button-group">
+                <button onclick="checkExtensions()">Check Extensions</button>
+                <button onclick="enableExtensions()">Enable Missing Extensions</button>
+            </div>
+            <div id="extensionsOutput" class="output"></div>
+        </div>
+        
+        <div class="section">
+            <h2>2️⃣ Check Auth Schema</h2>
+            <p>Verify auth schema and tables exist</p>
+            <div class="button-group">
+                <button onclick="checkAuthSchema()">Check Auth Schema</button>
+            </div>
+            <div id="schemaOutput" class="output"></div>
+        </div>
+        
+        <div class="section">
+            <h2>3️⃣ Check Users Table</h2>
+            <p>Verify users exist and are properly formatted</p>
+            <div class="button-group">
+                <button onclick="checkUsers()">Check Users</button>
+            </div>
+            <div id="usersOutput" class="output"></div>
+        </div>
+        
+        <div class="section">
+            <h2>4️⃣ Create Fresh User</h2>
+            <p>Delete old user and create a completely fresh one</p>
+            <div class="button-group">
+                <button onclick="deleteAndRecreateUser()">Delete & Recreate User</button>
+            </div>
+            <div id="userCreationOutput" class="output"></div>
+        </div>
+        
+        <div class="section">
+            <h2>5️⃣ Test Authentication</h2>
+            <p>Try to login with the new user</p>
+            <div class="button-group">
+                <button onclick="testAuth()">Test Auth Login</button>
+            </div>
+            <div id="authTestOutput" class="output"></div>
+        </div>
+        
+        <div class="section">
+            <h2>📋 Summary</h2>
+            <div id="summary" class="output"></div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://urcorksxlreocdjdnatw.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyY29ya3N4bHJlb2NkamRuYXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0ODMxOTksImV4cCI6MjA3OTA1OTE5OX0.9s2ScvRseIQk8hy8pNhHAsl9jOOUXLUuKQE_dyEjneA';
+        
+        let diagnosticResults = {
+            extensions: null,
+            schema: null,
+            users: null,
+            userCreation: null,
+            authTest: null
+        };
+        
+        function log(output, text, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type;
+            const html = `<div class="${className}">[${timestamp}] ${text}</div>`;
+            output.innerHTML += html;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function clearOutput(output) {
+            output.innerHTML = '';
+        }
+        
+        async function checkExtensions() {
+            const output = document.getElementById('extensionsOutput');
+            clearOutput(output);
+            
+            log(output, '⏳ Checking extensions...', 'info');
+            
+            const sql = `SELECT extname, extversion FROM pg_extension ORDER BY extname;`;
+            
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/query`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'apikey': SUPABASE_KEY,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: sql })
+                });
+                
+                if (!response.ok) {
+                    // Try alternative method
+                    log(output, '⚠️ RPC method not available, showing manual check:', 'warning');
+                    log(output, 'Go to Supabase Dashboard → SQL Editor and run:', 'info');
+                    log(output, sql, 'info');
+                    log(output, '', 'info');
+                    log(output, 'Then manually verify these extensions exist:', 'warning');
+                    log(output, '✓ pgcrypto', 'info');
+                    log(output, '✓ uuid-ossp', 'info');
+                    log(output, '✓ pgjwt', 'info');
+                    return;
+                }
+                
+                const data = await response.json();
+                log(output, `✅ Found ${data.length} extensions:`, 'success');
+                
+                const requiredExt = ['pgcrypto', 'uuid-ossp', 'pgjwt'];
+                const foundExt = data.map(e => e.extname);
+                
+                requiredExt.forEach(ext => {
+                    if (foundExt.includes(ext)) {
+                        log(output, `  ✓ ${ext}`, 'success');
+                    } else {
+                        log(output, `  ✗ ${ext} MISSING!`, 'error');
+                    }
+                });
+                
+                diagnosticResults.extensions = data;
+                updateSummary();
+            } catch (error) {
+                log(output, `❌ Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function enableExtensions() {
+            const output = document.getElementById('extensionsOutput');
+            clearOutput(output);
+            
+            log(output, '⏳ Enabling extensions...', 'info');
+            log(output, 'Please run the following SQL in Supabase SQL Editor:', 'warning');
+            log(output, '', 'info');
+            
+            const sql = `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+CREATE EXTENSION IF NOT EXISTS "pgjwt";`;
+            
+            log(output, sql, 'info');
+            log(output, '', 'info');
+            log(output, 'After running the SQL, click "Check Extensions" again', 'warning');
+        }
+        
+        async function checkAuthSchema() {
+            const output = document.getElementById('schemaOutput');
+            clearOutput(output);
+            
+            log(output, '⏳ Checking auth schema...', 'info');
+            log(output, 'Please run the following SQL in Supabase SQL Editor:', 'warning');
+            log(output, '', 'info');
+            
+            const sql = `-- Check if auth schema exists
+SELECT schema_name FROM information_schema.schemata WHERE schema_name = 'auth';
+
+-- List auth tables
+SELECT table_name FROM information_schema.tables WHERE table_schema = 'auth';
+
+-- Check auth.users columns
+SELECT column_name, data_type FROM information_schema.columns 
+WHERE table_schema = 'auth' AND table_name = 'users';`;
+            
+            log(output, sql, 'info');
+            log(output, '', 'info');
+            log(output, 'Expected output:', 'info');
+            log(output, '  - Schema: auth', 'success');
+            log(output, '  - Tables: users, refresh_tokens, etc.', 'success');
+            log(output, '  - Columns: id, email, encrypted_password, raw_user_meta_data, etc.', 'success');
+        }
+        
+        async function checkUsers() {
+            const output = document.getElementById('usersOutput');
+            clearOutput(output);
+            
+            log(output, '⏳ Checking users...', 'info');
+            log(output, 'Please run the following SQL in Supabase SQL Editor:', 'warning');
+            log(output, '', 'info');
+            
+            const sql = `SELECT id, email, email_confirmed_at, created_at, raw_user_meta_data 
+FROM auth.users 
+WHERE email = 'admin@school.com';`;
+            
+            log(output, sql, 'info');
+            log(output, '', 'info');
+            log(output, 'Expected output:', 'info');
+            log(output, '  - One row with email: admin@school.com', 'success');
+            log(output, '  - raw_user_meta_data should contain: {"role": "admin"}', 'success');
+            log(output, '  - email_confirmed_at should not be null', 'success');
+        }
+        
+        async function deleteAndRecreateUser() {
+            const output = document.getElementById('userCreationOutput');
+            clearOutput(output);
+            
+            log(output, '⏳ Preparing user deletion & recreation...', 'info');
+            log(output, 'Please run the following SQL in Supabase SQL Editor:', 'warning');
+            log(output, '', 'info');
+            
+            const sql = `-- Delete existing user
+DELETE FROM auth.users WHERE email = 'admin@school.com';
+
+-- Create new fresh user
+INSERT INTO auth.users (
+  instance_id,
+  id,
+  aud,
+  role,
+  email,
+  encrypted_password,
+  email_confirmed_at,
+  created_at,
+  updated_at,
+  raw_user_meta_data
+)
+VALUES (
+  '00000000-0000-0000-0000-000000000000',
+  gen_random_uuid(),
+  'authenticated',
+  'authenticated',
+  'admin@school.com',
+  crypt('Admin@123', gen_salt('bf')),
+  NOW(),
+  NOW(),
+  NOW(),
+  '{"role": "admin"}'::jsonb
+);
+
+-- Verify creation
+SELECT id, email, raw_user_meta_data FROM auth.users WHERE email = 'admin@school.com';`;
+            
+            log(output, sql, 'info');
+            log(output, '', 'info');
+            log(output, '✅ After running this SQL, test login again', 'success');
+        }
+        
+        async function testAuth() {
+            const output = document.getElementById('authTestOutput');
+            clearOutput(output);
+            
+            log(output, '⏳ Testing authentication...', 'info');
+            
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': SUPABASE_KEY,
+                        },
+                        body: JSON.stringify({
+                            email: 'admin@school.com',
+                            password: 'Admin@123'
+                        })
+                    }
+                );
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log(output, `✅ SUCCESS! User authenticated`, 'success');
+                    log(output, `User ID: ${data.user.id}`, 'success');
+                    log(output, `Email: ${data.user.email}`, 'success');
+                    log(output, `Role: ${data.user.user_metadata?.role || 'N/A'}`, 'success');
+                    log(output, `Token: ${data.access_token.substring(0, 30)}...`, 'success');
+                    diagnosticResults.authTest = { status: 'success', data };
+                } else {
+                    log(output, `❌ Authentication failed`, 'error');
+                    log(output, `Status: ${response.status}`, 'error');
+                    log(output, `Error Code: ${data.error_code}`, 'error');
+                    log(output, `Message: ${data.msg}`, 'error');
+                    log(output, `Error ID: ${data.error_id}`, 'error');
+                    diagnosticResults.authTest = { status: 'error', data };
+                    
+                    log(output, '', 'info');
+                    log(output, '💡 Possible solutions:', 'warning');
+                    log(output, '  1. Make sure pgcrypto extension is enabled', 'warning');
+                    log(output, '  2. Verify user exists in auth.users table', 'warning');
+                    log(output, '  3. Check that encrypted_password is not null', 'warning');
+                    log(output, '  4. Try deleting and recreating the user', 'warning');
+                }
+                
+                updateSummary();
+            } catch (error) {
+                log(output, `❌ Network Error: ${error.message}`, 'error');
+                diagnosticResults.authTest = { status: 'error', error: error.message };
+            }
+        }
+        
+        function updateSummary() {
+            const summary = document.getElementById('summary');
+            const results = diagnosticResults;
+            
+            let html = '<h3 style="color: #569cd6;">Diagnostic Results:</h3>';
+            
+            if (results.authTest) {
+                if (results.authTest.status === 'success') {
+                    html += '<div class="success">✅ Authentication is working!</div>';
+                    html += '<div class="success">👉 Go to login.html and test the login form</div>';
+                } else {
+                    html += '<div class="error">❌ Authentication is NOT working</div>';
+                    html += '<div class="warning">📋 Follow the steps above to fix the issue:</div>';
+                    html += '<div class="warning">  1. Check & enable extensions</div>';
+                    html += '<div class="warning">  2. Check auth schema</div>';
+                    html += '<div class="warning">  3. Delete & recreate user</div>';
+                    html += '<div class="warning">  4. Test again</div>';
+                }
+            } else {
+                html += '<div class="info">⏳ Run the diagnostics above to check your setup</div>';
+            }
+            
+            summary.innerHTML = html;
+        }
+        
+        // Run initial summary
+        updateSummary();
+    </script>
+</body>
+</html>

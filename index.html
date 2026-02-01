@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ثانوية صلاح الدين الأيوبي – حي الفداء – الدار البيضاء</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/lightbox.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <script src="javascript/toast.js"></script>
     <script src="javascript/supabase-client.js"></script>
+    <script src="javascript/gallery-manager.js"></script>
+    <script src="javascript/email-notifications.js"></script>
+    <script src="javascript/accessibility.js"></script>
     <script src="javascript/app.js"></script>
     <script src="javascript/certificates.js"></script>
     <script src="javascript/script.js"></script>
@@ -203,6 +207,18 @@
     <section class="gallery-section" id="gallery">
         <div class="container">
             <h2 class="section-title">معرض الصور</h2>
+            
+            <!-- Gallery Controls -->
+            <div class="gallery-controls">
+                <div class="gallery-search">
+                    <input type="text" id="gallerySearch" placeholder="ابحث عن صورة..." aria-label="بحث في المعرض">
+                </div>
+                <div class="sort-buttons">
+                    <button class="sort-btn active" data-sort="newest" aria-label="ترتيب الأحدث أولا">الأحدث</button>
+                    <button class="sort-btn" data-sort="oldest" aria-label="ترتيب الأقدم أولا">الأقدم</button>
+                    <button class="sort-btn" data-sort="a-z" aria-label="ترتيب أبجدي">أ-ي</button>
+                </div>
+            </div>
             
             <div class="gallery-grid" id="galleryGrid">
                 <div class="gallery-item">
@@ -683,5 +699,29 @@
             <p>تم تطوير الموقع بواسطة فريق التكنولوجيا بالمؤسسة</p>
         </div>
     </footer>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox-overlay" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose" aria-label="إغلاق معرض الصور">✕</button>
+        <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="الصورة السابقة">❮</button>
+        <div class="lightbox-container">
+            <img id="lightboxImage" class="lightbox-image" alt="" />
+        </div>
+        <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="الصورة التالية">❯</button>
+        <div class="lightbox-title" id="lightboxTitle"></div>
+        <div class="lightbox-counter" id="lightboxCounter"></div>
+    </div>
+
+    <!-- CONFIRMATION DIALOG -->
+    <div class="confirm-dialog" id="confirmDialog">
+        <div class="confirm-dialog-box">
+            <h3 id="confirmTitle">هل أنت متأكد؟</h3>
+            <p id="confirmMessage">هذا الإجراء لا يمكن التراجع عنه.</p>
+            <div class="confirm-dialog-buttons">
+                <button class="confirm-dialog-btn confirm" id="confirmYes">حذف</button>
+                <button class="confirm-dialog-btn cancel" id="confirmNo">إلغاء</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Test User</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin: 15px 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .button-secondary {
+            background: #6c757d;
+        }
+        
+        .button-secondary:hover {
+            background: #5a6268;
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            display: block;
+        }
+        
+        .code {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .copy-btn:hover {
+            background: #5568d3;
+        }
+        
+        .list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .list li:last-child {
+            border-bottom: none;
+        }
+        
+        .list li strong {
+            color: #333;
+        }
+        
+        .icon {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Create Test User</h1>
+        <p class="subtitle">Setup authentication for your LSA dashboard</p>
+        
+        <!-- Option 1: Manual Creation -->
+        <div class="section">
+            <h2><span class="icon">1️⃣</span> Manual User Creation</h2>
+            <p style="color: #666; font-size: 13px; margin-bottom: 15px;">
+                Follow these steps to create a user in Supabase dashboard:
+            </p>
+            <ol class="list" style="margin-left: 20px;">
+                <li>Go to <strong>https://app.supabase.com</strong></li>
+                <li>Select your project</li>
+                <li>Go to <strong>Authentication → Users</strong></li>
+                <li>Click <strong>"Add user"</strong></li>
+                <li>Email: <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">admin@school.com</code></li>
+                <li>Password: <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">Admin@123</code></li>
+                <li>Check <strong>"Auto Confirm User"</strong></li>
+                <li>Click <strong>"Create User"</strong></li>
+                <li>Open user details → <strong>User Metadata</strong></li>
+                <li>Add JSON: <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">{"role": "admin"}</code></li>
+                <li>Click <strong>"Save"</strong></li>
+            </ol>
+        </div>
+        
+        <!-- Option 2: SQL Creation -->
+        <div class="section">
+            <h2><span class="icon">2️⃣</span> SQL Creation</h2>
+            <p style="color: #666; font-size: 13px; margin-bottom: 15px;">
+                Run this SQL in Supabase → SQL Editor:
+            </p>
+            <div class="code">-- Create admin user
+INSERT INTO auth.users (
+  instance_id, id, aud, role, email,
+  encrypted_password, email_confirmed_at,
+  created_at, updated_at,
+  raw_user_meta_data
+)
+VALUES (
+  '00000000-0000-0000-0000-000000000000',
+  gen_random_uuid(),
+  'authenticated',
+  'authenticated',
+  'admin@school.com',
+  crypt('Admin@123', gen_salt('bf')),
+  NOW(), NOW(), NOW(),
+  '{"role": "admin"}'::jsonb
+);</div>
+            <button class="copy-btn" onclick="copySql()">📋 Copy SQL</button>
+        </div>
+        
+        <!-- Option 3: Quick Test -->
+        <div class="section">
+            <h2><span class="icon">3️⃣</span> Test Login</h2>
+            <form id="testForm" onsubmit="testLogin(event)">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" value="admin@school.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" value="Admin@123" required>
+                </div>
+                <button type="submit">🚀 Test Login Now</button>
+            </form>
+        </div>
+        
+        <!-- Status -->
+        <div id="status" class="status"></div>
+        
+        <!-- Next Steps -->
+        <div class="section" style="border-left-color: #28a745;">
+            <h2><span class="icon">✅</span> After Creating User</h2>
+            <ol class="list" style="margin-left: 20px;">
+                <li>Go to <strong>login.html</strong></li>
+                <li>Enter: <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">admin@school.com</code></li>
+                <li>Password: <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">Admin@123</code></li>
+                <li>Click <strong>"دخول"</strong> (Login)</li>
+                <li>Should redirect to <strong>dashboard.html</strong> ✅</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function copySql() {
+            const sql = `-- Create admin user
+INSERT INTO auth.users (
+  instance_id, id, aud, role, email,
+  encrypted_password, email_confirmed_at,
+  created_at, updated_at,
+  raw_user_meta_data
+)
+VALUES (
+  '00000000-0000-0000-0000-000000000000',
+  gen_random_uuid(),
+  'authenticated',
+  'authenticated',
+  'admin@school.com',
+  crypt('Admin@123', gen_salt('bf')),
+  NOW(), NOW(), NOW(),
+  '{"role": "admin"}'::jsonb
+);`;
+            
+            navigator.clipboard.writeText(sql).then(() => {
+                showStatus('✅ SQL copied to clipboard!', 'success');
+            }).catch(() => {
+                showStatus('❌ Failed to copy. Please copy manually.', 'error');
+            });
+        }
+        
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = 'status ' + type;
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.className = 'status';
+                }, 5000);
+            }
+        }
+        
+        async function testLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            showStatus('⏳ Testing login...', 'info');
+            
+            try {
+                // Make request to Supabase Auth API
+                const response = await fetch(
+                    'https://urcorksxlreocdjdnatw.supabase.co/auth/v1/token?grant_type=password',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyY29ya3N4bHJlb2NkamRuYXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0ODMxOTksImV4cCI6MjA3OTA1OTE5OX0.9s2ScvRseIQk8hy8pNhHAsl9jOOUXLUuKQE_dyEjneA',
+                        },
+                        body: JSON.stringify({ email, password })
+                    }
+                );
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    showStatus(`❌ Login failed: ${data.error_description || data.msg || 'Invalid credentials'}\n\nMake sure the user exists in Supabase with this exact email and password.`, 'error');
+                    return;
+                }
+                
+                const userRole = data.user?.user_metadata?.role || 'unknown';
+                showStatus(`✅ Login successful!\n\nEmail: ${data.user.email}\nRole: ${userRole}\n\nYou can now test logging in on login.html`, 'success');
+                
+            } catch (error) {
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

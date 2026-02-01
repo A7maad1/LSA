@@ -10,12 +10,13 @@ let currentUser = null;
 
 async function initializeDashboard() {
     // Check if user is authenticated
-    const session = authAPI.getSession();
+    const session = authManager.getSession();
     
     if (session) {
         // Show dashboard
         showDashboard();
         loadAllData();
+        loadAdminStats();
     } else {
         // Show login
         showLoginPage();
@@ -32,33 +33,10 @@ async function initializeDashboard() {
 function setupEventListeners() {
     // AUTH PAGES
     const loginForm = document.getElementById('loginForm');
-    const signupForm = document.getElementById('signupForm');
-    const switchToSignup = document.getElementById('switchToSignup');
-    const switchToLogin = document.getElementById('switchToLogin');
     const logoutBtn = document.getElementById('logoutBtn');
     
     if (loginForm) {
         loginForm.addEventListener('submit', handleLogin);
-    }
-    
-    if (signupForm) {
-        signupForm.addEventListener('submit', handleSignup);
-    }
-    
-    if (switchToSignup) {
-        switchToSignup.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('signupPage').classList.remove('hidden');
-        });
-    }
-    
-    if (switchToLogin) {
-        switchToLogin.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('signupPage').classList.add('hidden');
-            document.getElementById('loginPage').classList.remove('hidden');
-        });
     }
     
     if (logoutBtn) {
@@ -85,10 +63,10 @@ function setupEventListeners() {
         addAnnouncementForm.addEventListener('submit', handleAddAnnouncement);
     }
     
-    // MEETING FORM
-    const addMeetingForm = document.getElementById('addMeetingForm');
-    if (addMeetingForm) {
-        addMeetingForm.addEventListener('submit', handleAddMeeting);
+    // GALLERY FORM
+    const addGalleryForm = document.getElementById('addGalleryForm');
+    if (addGalleryForm) {
+        addGalleryForm.addEventListener('submit', handleAddGalleryImage);
     }
 }
 
@@ -100,7 +78,7 @@ async function handleLogin(e) {
     
     try {
         message.textContent = 'جاري تسجيل الدخول...';
-        const response = await authAPI.signIn(email, password);
+        const response = await authManager.signIn(email, password);
         currentUser = response;
         
         message.textContent = 'تم تسجيل الدخول بنجاح!';
@@ -116,35 +94,14 @@ async function handleLogin(e) {
     }
 }
 
-async function handleSignup(e) {
-    e.preventDefault();
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
-    const message = document.getElementById('signupMessage');
-    
-    try {
-        message.textContent = 'جاري إنشاء الحساب...';
-        const response = await authAPI.signUp(email, password);
-        
-        message.textContent = 'تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.';
-        message.classList.remove('error');
-        
-        setTimeout(() => {
-            document.getElementById('signupPage').classList.add('hidden');
-            document.getElementById('loginPage').classList.remove('hidden');
-        }, 1500);
-    } catch (error) {
-        message.textContent = 'خطأ في إنشاء الحساب. قد يكون البريد مستخدماً بالفعل.';
-        message.classList.add('error');
-    }
-}
+// Signup removed - accounts are pre-created
+// Users can only login with existing accounts
 
 async function handleLogout() {
-    await authAPI.signOut();
+    await authManager.signOut();
     currentUser = null;
     showLoginPage();
     document.getElementById('loginForm').reset();
-    document.getElementById('signupForm').reset();
 }
 
 // ============================================
@@ -157,7 +114,7 @@ function showLoginPage() {
 }
 
 function showDashboard() {
-    const session = authAPI.getSession();
+    const session = authManager.getSession();
     if (session) {
         document.getElementById('loginPage').classList.add('hidden');
         document.getElementById('dashboardPage').classList.remove('hidden');
@@ -187,8 +144,8 @@ function switchSection(section) {
         loadActivities();
     } else if (section === 'announcements') {
         loadAnnouncements();
-    } else if (section === 'meetings') {
-        loadMeetings();
+    } else if (section === 'gallery') {
+        loadGallery();
     } else if (section === 'certificates') {
         loadCertificateRequests();
     } else if (section === 'contacts') {
@@ -203,7 +160,7 @@ function switchSection(section) {
 async function loadAllData() {
     loadActivities();
     loadAnnouncements();
-    loadMeetings();
+    loadGallery();
     loadContactMessages();
 }
 
@@ -530,104 +487,6 @@ async function deleteAnnouncement(id) {
 }
 
 // ============================================
-// MEETINGS MANAGEMENT
-// ============================================
-
-async function loadMeetings() {
-    const container = document.getElementById('meetingsList');
-    
-    try {
-        const meetings = await API.meetings.getAll();
-        
-        if (meetings.length === 0) {
-            container.innerHTML = '<p class="loading">لا توجد اجتماعات مقررة حالياً</p>';
-            return;
-        }
-        
-        container.innerHTML = meetings.map(meeting => `
-            <div class="item">
-                <div class="item-info">
-                    <h4>${meeting.subject}</h4>
-                    <p>📅 ${formatDate(meeting.meeting_date)}</p>
-                    <p>📍 ${meeting.location}</p>
-                </div>
-                <div class="item-actions">
-                    <button class="item-delete" data-action="delete-meeting" data-id="${meeting.id}">🗑️ حذف</button>
-                </div>
-            </div>
-        `).join('');
-        
-        // Add event listeners using event delegation
-        setupMeetingActionListeners();
-    } catch (error) {
-        console.error('Error loading meetings:', error);
-        container.innerHTML = '<p class="loading">خطأ في تحميل البيانات</p>';
-    }
-}
-
-function setupMeetingActionListeners() {
-    const container = document.getElementById('meetingsList');
-    
-    // Remove old listener if it exists
-    const newContainer = container.cloneNode(true);
-    container.parentNode.replaceChild(newContainer, container);
-    
-    newContainer.addEventListener('click', async (e) => {
-        const deleteBtn = e.target.closest('[data-action="delete-meeting"]');
-        
-        if (deleteBtn) {
-            const id = deleteBtn.getAttribute('data-id');
-            await deleteMeeting(id);
-        }
-    });
-}
-
-async function handleAddMeeting(e) {
-    e.preventDefault();
-    
-    const subject = document.getElementById('meetSubject').value;
-    const meeting_date = document.getElementById('meetDate').value;
-    const location = document.getElementById('meetLocation').value;
-    const description = document.getElementById('meetDesc').value;
-    
-    try {
-        await API.meetings.create({
-            subject,
-            meeting_date,
-            location,
-            description,
-        });
-        
-        // Reset form
-        document.getElementById('addMeetingForm').reset();
-        
-        // Reload meetings
-        loadMeetings();
-        
-        showSectionMessage('تم إضافة الاجتماع بنجاح!', 'success', 'meeting');
-    } catch (error) {
-        console.error('Error adding meeting:', error);
-        showSectionMessage('حدث خطأ في إضافة الاجتماع', 'error', 'meeting');
-    }
-}
-
-async function deleteMeeting(id) {
-    console.log('Deleting meeting with id:', id);
-    if (confirm('هل تريد حذف هذا الاجتماع؟')) {
-        try {
-            const result = await API.meetings.delete(id);
-            console.log('Delete result:', result);
-            await loadMeetings();
-            showSectionMessage('تم حذف الاجتماع بنجاح!', 'success', 'meeting');
-        } catch (error) {
-            console.error('Error deleting meeting:', error);
-            showSectionMessage('حدث خطأ في حذف الاجتماع: ' + error.message, 'error', 'meeting');
-        }
-    }
-}
-
-// ============================================
-// ============================================
 // CERTIFICATE REQUESTS MANAGEMENT
 // ============================================
 
@@ -917,3 +776,182 @@ function setupContactEventListeners() {
     }
 }
 
+// ============================================
+// GALLERY MANAGEMENT
+// ============================================
+
+async function loadGallery() {
+    const container = document.getElementById('galleryList');
+    
+    try {
+        const galleryItems = await API.gallery.getAll();
+        
+        // Store gallery items globally for edit functionality
+        window.allGalleryItems = galleryItems;
+        
+        if (galleryItems.length === 0) {
+            container.innerHTML = '<p class="loading">لا توجد صور في المعرض</p>';
+            return;
+        }
+        
+        container.innerHTML = galleryItems.map(item => `
+            <div class="gallery-item-card">
+                <div class="gallery-item-image">
+                    <img src="${item.image_url}" alt="${item.title}">
+                </div>
+                <div class="gallery-item-info">
+                    <h4>${item.title}</h4>
+                    ${item.description ? `<p>${item.description}</p>` : ''}
+                    <p class="gallery-item-date">📅 ${formatDate(item.created_at)}</p>
+                </div>
+                <div class="item-actions">
+                    <button class="item-delete" data-action="delete-gallery" data-id="${item.id}">🗑️ حذف</button>
+                </div>
+            </div>
+        `).join('');
+        
+        // Add event listeners using event delegation
+        setupGalleryActionListeners();
+    } catch (error) {
+        console.error('Error loading gallery:', error);
+        container.innerHTML = '<p class="loading">خطأ في تحميل البيانات</p>';
+    }
+}
+
+function setupGalleryActionListeners() {
+    const container = document.getElementById('galleryList');
+    
+    // Remove old listener if it exists
+    const newContainer = container.cloneNode(true);
+    container.parentNode.replaceChild(newContainer, container);
+    
+    newContainer.addEventListener('click', async (e) => {
+        const deleteBtn = e.target.closest('[data-action="delete-gallery"]');
+        
+        if (deleteBtn) {
+            const id = deleteBtn.getAttribute('data-id');
+            await deleteGalleryImage(id);
+        }
+    });
+}
+async function handleAddGalleryImage(e) {
+    e.preventDefault();
+    
+    const title = document.getElementById('galleryTitle').value;
+    const description = document.getElementById('galleryDescription').value;
+    const imageFile = document.getElementById('galleryImage').files[0];
+    const formContainer = document.getElementById('addGalleryForm');
+    
+    try {
+        let image_url = null;
+        
+        // Upload image if provided
+        if (imageFile) {
+            try {
+                // Show preview
+                FileUploadHelper.showPreview(formContainer, imageFile);
+                
+                // Compress image before upload
+                const compressedFile = await ImageCompressor.compress(imageFile);
+                
+                // Show progress bar
+                FileUploadHelper.showProgress(formContainer, 0);
+                
+                // Simulate progress updates
+                const progressInterval = setInterval(() => {
+                    const current = Math.min(
+                        parseInt(formContainer.querySelector('.upload-progress-fill').style.width) + Math.random() * 30,
+                        90
+                    );
+                    FileUploadHelper.showProgress(formContainer, current);
+                }, 200);
+                
+                // Upload compressed image
+                image_url = await storageAPI.uploadImage(compressedFile, 'gallery');
+                
+                clearInterval(progressInterval);
+                FileUploadHelper.showProgress(formContainer, 100);
+                
+                // Hide progress after delay
+                setTimeout(() => {
+                    FileUploadHelper.hideProgress(formContainer);
+                    FileUploadHelper.removePreview(formContainer);
+                }, 1000);
+            } catch (uploadError) {
+                console.warn('Image upload failed:', uploadError);
+                FileUploadHelper.hideProgress(formContainer);
+                showSectionMessage('فشل رفع الصورة، حاول مرة أخرى', 'error', 'gallery');
+                return;
+            }
+        }
+        
+        await API.gallery.create({
+            title,
+            description,
+            image_url,
+        });
+        
+        // Reset form
+        document.getElementById('addGalleryForm').reset();
+        
+        // Reload gallery
+        loadGallery();
+        
+        showSectionMessage('تم إضافة الصورة بنجاح!', 'success', 'gallery');
+    } catch (error) {
+        console.error('Error adding gallery image:', error);
+        showSectionMessage('حدث خطأ في إضافة الصورة', 'error', 'gallery');
+    }
+}
+
+async function deleteGalleryImage(id) {
+    console.log('Deleting gallery image with id:', id);
+    
+    // Show confirmation dialog
+    const confirmed = await ConfirmDialog.show(
+        'حذف الصورة',
+        'هل تريد حذف هذه الصورة؟ لا يمكن التراجع عن هذا الإجراء.'
+    );
+    
+    if (!confirmed) return;
+    
+    try {
+        const result = await API.gallery.delete(id);
+        console.log('Delete result:', result);
+        await loadGallery();
+        loadAdminStats();
+        showSectionMessage('تم حذف الصورة بنجاح!', 'success', 'gallery');
+    } catch (error) {
+        console.error('Error deleting gallery image:', error);
+        showSectionMessage('حدث خطأ في حذف الصورة: ' + error.message, 'error', 'gallery');
+    }
+}
+
+// ============================================
+// ADMIN STATISTICS
+// ============================================
+
+async function loadAdminStats() {
+    try {
+        const [activities, announcements, gallery, contacts] = await Promise.all([
+            API.activities.getAll().catch(() => []),
+            API.announcements.getAll().catch(() => []),
+            API.gallery.getAll().catch(() => []),
+            API.contacts.getAll().catch(() => [])
+        ]);
+
+        document.getElementById('statActivities').textContent = activities.length || 0;
+        document.getElementById('statAnnouncements').textContent = announcements.length || 0;
+        document.getElementById('statGallery').textContent = gallery.length || 0;
+        document.getElementById('statContacts').textContent = contacts.length || 0;
+
+        console.log('Admin stats updated:', {
+            activities: activities.length,
+            announcements: announcements.length,
+            gallery: gallery.length,
+            contacts: contacts.length
+        });
+    } catch (error) {
+        console.error('Error loading admin stats:', error);
+    }
+}

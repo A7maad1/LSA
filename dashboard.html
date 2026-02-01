@@ -6,9 +6,20 @@
     <title>لوحة الإدارة - ثانوية صلاح الدين الأيوبي</title>
     <link rel="stylesheet" href="css/styles-dynamic.css">
     <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/lightbox.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <!-- CryptoJS for password hashing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="javascript/toast.js"></script>
+    <script src="javascript/config.js"></script>
+    <script src="javascript/utils.js"></script>
+    <script src="javascript/validation.js"></script>
     <script src="javascript/supabase-client.js"></script>
+    <script src="javascript/auth.js"></script>
+    <script src="javascript/gallery-manager.js"></script>
+    <script src="javascript/email-notifications.js"></script>
+    <script src="javascript/accessibility.js"></script>
+    <script src="javascript/supabase-api.js"></script>
     <script src="javascript/dashboard.js"></script>
 </head>
 <body>
@@ -35,41 +46,14 @@
                     <p class="auth-message" id="authMessage"></p>
                 </form>
                 
-                <p class="auth-switch">
-                    ليس لديك حساب؟ <a href="#" id="switchToSignup">إنشاء حساب</a>
+                <p class="auth-switch" style="font-size: 13px; color: #666;">
+                    📧 حسابات موجودة بالفعل
                 </p>
             </div>
         </div>
     </div>
 
-    <!-- SIGNUP PAGE (Hidden Initially) -->
-    <div id="signupPage" class="auth-page hidden">
-        <div class="auth-container">
-            <div class="auth-card">
-                <h1>إنشاء حساب إداري</h1>
-                <p>تسجيل مستخدم جديد</p>
-                
-                <form id="signupForm" class="auth-form">
-                    <div class="form-group">
-                        <label for="signupEmail">البريد الإلكتروني</label>
-                        <input type="email" id="signupEmail" name="email" required placeholder="your@email.com">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="signupPassword">كلمة المرور</label>
-                        <input type="password" id="signupPassword" name="password" required placeholder="••••••••">
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary">إنشاء حساب</button>
-                    
-                    <p class="auth-message" id="signupMessage"></p>
-                </form>
-                
-                <p class="auth-switch">
-                    لديك حساب بالفعل؟ <a href="#" id="switchToLogin">تسجيل الدخول</a>
-                </p>
-            </div>
-        </div>
+    <!-- SIGNUP PAGE REMOVED - Accounts are pre-created -->
     </div>
 
     <!-- DASHBOARD PAGE (Hidden Initially) -->
@@ -82,6 +66,26 @@
             </div>
         </header>
 
+        <!-- ADMIN STATS -->
+        <div class="admin-stats" id="adminStats" style="padding: 20px; margin: 0 20px;">
+            <div class="stat-card">
+                <div class="stat-label">عدد الأنشطة</div>
+                <div class="stat-number" id="statActivities">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">عدد الإعلانات</div>
+                <div class="stat-number" id="statAnnouncements">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">صور المعرض</div>
+                <div class="stat-number" id="statGallery">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">رسائل التواصل</div>
+                <div class="stat-number" id="statContacts">0</div>
+            </div>
+        </div>
+
         <div class="dashboard-container">
             <!-- SIDEBAR -->
             <aside class="dashboard-sidebar">
@@ -92,11 +96,11 @@
                     <button class="nav-item" data-section="announcements">
                         📢 إدارة الإعلانات
                     </button>
-                    <button class="nav-item" data-section="meetings">
-                        🗓️ إدارة الاجتماعات
-                    </button>
                     <button class="nav-item" data-section="certificates">
                         📜 طلبات الشهادات
+                    </button>
+                    <button class="nav-item" data-section="gallery">
+                        🖼️ إدارة المعرض
                     </button>
                     <button class="nav-item" data-section="contacts">
                         ✉️ رسائل التواصل
@@ -195,48 +199,6 @@
                     </div>
                 </section>
 
-                <!-- MEETINGS SECTION -->
-                <section id="meetingsSection" class="dashboard-section">
-                    <h2>إدارة الاجتماعات</h2>
-                    
-                    <div class="add-form-container">
-                        <h3>إضافة اجتماع جديد</h3>
-                        <form id="addMeetingForm" class="dashboard-form">
-                            <div class="form-group">
-                                <label for="meetSubject">موضوع الاجتماع</label>
-                                <input type="text" id="meetSubject" required>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="meetDate">التاريخ والوقت</label>
-                                    <input type="datetime-local" id="meetDate" required>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="meetLocation">المكان</label>
-                                    <input type="text" id="meetLocation" placeholder="المدرسة / الإدارة">
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="meetDesc">الوصف</label>
-                                <textarea id="meetDesc" rows="4"></textarea>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-primary">إضافة الاجتماع</button>
-                        </form>
-                    </div>
-                    
-                    <div class="items-list-container">
-                        <h3>الاجتماعات المقررة</h3>
-                        <div id="meetingMessage" class="activity-message"></div>
-                        <div id="meetingsList" class="items-list">
-                            <div class="loading">جاري التحميل...</div>
-                        </div>
-                    </div>
-                </section>
-
                 <!-- CERTIFICATES REQUESTS SECTION -->
                 <section id="certificatesSection" class="dashboard-section">
                     <h2>طلبات الشهادات المدرسية</h2>
@@ -254,6 +216,42 @@
                     <div class="certificate-requests-container">
                         <div id="certificateMessage" class="activity-message"></div>
                         <div id="certificatesList" class="certificate-requests-list">
+                            <div class="loading">جاري التحميل...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- GALLERY SECTION -->
+                <section id="gallerySection" class="dashboard-section">
+                    <h2>إدارة المعرض</h2>
+                    
+                    <div class="add-form-container">
+                        <h3>إضافة صورة جديدة</h3>
+                        <form id="addGalleryForm" class="dashboard-form">
+                            <div class="form-group">
+                                <label for="galleryTitle">عنوان الصورة</label>
+                                <input type="text" id="galleryTitle" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="galleryDescription">الوصف (اختياري)</label>
+                                <textarea id="galleryDescription" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="galleryImage">الصورة</label>
+                                <input type="file" id="galleryImage" accept="image/*" required>
+                                <span class="form-hint">سيتم رفع الصورة إلى Supabase Storage</span>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">إضافة الصورة</button>
+                        </form>
+                    </div>
+                    
+                    <div class="items-list-container">
+                        <h3>صور المعرض</h3>
+                        <div id="galleryMessage" class="activity-message"></div>
+                        <div id="galleryList" class="gallery-admin-list">
                             <div class="loading">جاري التحميل...</div>
                         </div>
                     </div>
@@ -280,6 +278,18 @@
                     </div>
                 </section>
             </main>
+        </div>
+    </div>
+
+    <!-- CONFIRMATION DIALOG -->
+    <div class="confirm-dialog" id="confirmDialog">
+        <div class="confirm-dialog-box">
+            <h3 id="confirmTitle">هل أنت متأكد؟</h3>
+            <p id="confirmMessage">هذا الإجراء لا يمكن التراجع عنه.</p>
+            <div class="confirm-dialog-buttons">
+                <button class="confirm-dialog-btn confirm" id="confirmYes">حذف</button>
+                <button class="confirm-dialog-btn cancel" id="confirmNo">إلغاء</button>
+            </div>
         </div>
     </div>
 

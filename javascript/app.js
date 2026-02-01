@@ -13,6 +13,9 @@ async function initializeApp() {
     // Load latest announcements
     loadLatestAnnouncements();
     
+    // Load gallery images
+    loadGallery();
+    
     // Setup navigation
     setupNavigation();
     
@@ -147,6 +150,38 @@ async function loadLatestAnnouncements() {
     } catch (error) {
         console.error('Error loading announcements:', error);
         container.innerHTML = '<p class="error-message">خطأ في تحميل الإعلانات</p>';
+    }
+}
+
+// ============================================
+// LOAD GALLERY
+// ============================================
+
+async function loadGallery() {
+    const container = document.getElementById('galleryGrid');
+    
+    if (!container) {
+        console.warn('Gallery container not found');
+        return;
+    }
+    
+    try {
+        const galleryItems = await API.gallery.getAll();
+        
+        if (galleryItems.length === 0) {
+            console.log('No gallery items found, keeping default placeholders');
+            return;
+        }
+        
+        // Use gallery manager to handle rendering, lightbox, etc.
+        if (galleryManager) {
+            galleryManager.setGalleryItems(galleryItems);
+        }
+        
+        console.log('Gallery loaded successfully:', galleryItems.length, 'items');
+    } catch (error) {
+        console.error('Error loading gallery:', error);
+        // Keep default placeholders if there's an error
     }
 }
 

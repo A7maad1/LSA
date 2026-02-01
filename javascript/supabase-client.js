@@ -1,4 +1,4 @@
-// ============================================
+﻿// ============================================
 // JWT HELPER - For signing authentication tokens
 // ============================================
 
@@ -265,364 +265,106 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabase = new SupabaseClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// ============================================
-// API UTILITIES
-// ============================================
-
-const API = {
-    // Activities
-    activities: {
-        getAll: async () => {
-            try {
-                return await supabase.table('activities').getAll();
-            } catch (error) {
-                console.error('Error fetching activities:', error);
-                return [];
-            }
-        },
-
-        getById: async (id) => {
-            try {
-                return await supabase.table('activities').findById(id);
-            } catch (error) {
-                console.error('Error fetching activity:', error);
-                return null;
-            }
-        },
-
-        create: async (activity) => {
-            try {
-                return await supabase.table('activities').insert({
-                    ...activity,
-                    created_at: new Date().toISOString()
-                });
-            } catch (error) {
-                console.error('Error creating activity:', error);
-                throw error;
-            }
-        },
-
-        update: async (id, activity) => {
-            try {
-                return await supabase.table('activities').update(activity, `id=eq.${id}`);
-            } catch (error) {
-                console.error('Error updating activity:', error);
-                throw error;
-            }
-        },
-
-        delete: async (id) => {
-            try {
-                await supabase.table('activities').delete(`id=eq.${id}`);
-                return true;
-            } catch (error) {
-                console.error('Error deleting activity:', error);
-                throw error;
-            }
-        }
-    },
-
-    // Announcements
-    announcements: {
-        getAll: async () => {
-            try {
-                return await supabase.table('announcements').getAll();
-            } catch (error) {
-                console.error('Error fetching announcements:', error);
-                return [];
-            }
-        },
-
-        create: async (announcement) => {
-            try {
-                return await supabase.table('announcements').insert({
-                    ...announcement,
-                    created_at: new Date().toISOString()
-                });
-            } catch (error) {
-                console.error('Error creating announcement:', error);
-                throw error;
-            }
-        },
-
-        delete: async (id) => {
-            try {
-                await supabase.table('announcements').delete(`id=eq.${id}`);
-                return true;
-            } catch (error) {
-                console.error('Error deleting announcement:', error);
-                throw error;
-            }
-        }
-    },
-
-    // Meetings
-    meetings: {
-        getAll: async () => {
-            try {
-                return await supabase.table('meetings').getAll();
-            } catch (error) {
-                console.error('Error fetching meetings:', error);
-                return [];
-            }
-        },
-
-        create: async (meeting) => {
-            try {
-                return await supabase.table('meetings').insert({
-                    ...meeting,
-                    created_at: new Date().toISOString()
-                });
-            } catch (error) {
-                console.error('Error creating meeting:', error);
-                throw error;
-            }
-        },
-
-        delete: async (id) => {
-            try {
-                await supabase.table('meetings').delete(`id=eq.${id}`);
-                return true;
-            } catch (error) {
-                console.error('Error deleting meeting:', error);
-                throw error;
-            }
-        }
-    },
-
-    // Certificates
-    certificates: {
-        getAll: async () => {
-            try {
-                return await supabase.table('certificate_requests').getAll();
-            } catch (error) {
-                console.error('Error fetching certificates:', error);
-                return [];
-            }
-        },
-
-        create: async (certificate) => {
-            try {
-                const result = await supabase.table('certificate_requests').insert({
-                    ...certificate,
-                    created_at: new Date().toISOString()
-                });
-                // Supabase returns an array with the inserted records
-                return Array.isArray(result) ? result[0] : result;
-            } catch (error) {
-                console.error('Error creating certificate request:', error);
-                throw error;
-            }
-        },
-
-        update: async (id, certificate) => {
-            try {
-                return await supabase.table('certificate_requests').update(certificate, `id=eq.${id}`);
-            } catch (error) {
-                console.error('Error updating certificate request:', error);
-                throw error;
-            }
-        },
-
-        delete: async (id) => {
-            try {
-                await supabase.table('certificate_requests').delete(`id=eq.${id}`);
-                return true;
-            } catch (error) {
-                console.error('Error deleting certificate request:', error);
-                throw error;
-            }
-        }
-    },
-
-    // Contacts
-    contacts: {
-        getAll: async () => {
-            try {
-                return await supabase.table('contacts').getAll();
-            } catch (error) {
-                console.error('Error fetching contacts:', error);
-                return [];
-            }
-        },
-
-        insert: async (contact) => {
-            try {
-                const result = await supabase.table('contacts').insert({
-                    ...contact,
-                    created_at: new Date().toISOString()
-                });
-                // Supabase returns an array with the inserted records
-                return Array.isArray(result) ? result[0] : result;
-            } catch (error) {
-                console.error('Error creating contact message:', error);
-                throw error;
-            }
-        },
-
-        update: async (id, contact) => {
-            try {
-                return await supabase.table('contacts').update(contact, `id=eq.${id}`);
-            } catch (error) {
-                console.error('Error updating contact message:', error);
-                throw error;
-            }
-        },
-
-        delete: async (id) => {
-            try {
-                await supabase.table('contacts').delete(`id=eq.${id}`);
-                return true;
-            } catch (error) {
-                console.error('Error deleting contact message:', error);
-                throw error;
-            }
-        }
-    }
-};
+// Note: API object is now defined in supabase-api.js with all modules
 
 // ============================================
-// STORAGE API - For Image and File Uploads
+// EXPORT SUPABASE CLIENT
 // ============================================
-
-const storageAPI = {
-    uploadImage: async (file, bucket = 'activities') => {
-        try {
-            const timestamp = Date.now();
-            const fileName = `${timestamp}_${file.name}`;
-            
-            const storage = supabase.storage(bucket);
-            const result = await storage.upload(fileName, file);
-            
-            // Return the public URL
-            return storage.getPublicUrl(fileName);
-        } catch (error) {
-            console.error('Error uploading image:', error);
-            throw error;
-        }
-    },
-
-    deleteImage: async (path, bucket = 'activities') => {
-        try {
-            const storage = supabase.storage(bucket);
-            return await storage.delete(path);
-        } catch (error) {
-            console.error('Error deleting image:', error);
-            throw error;
-        }
-    }
-};
-
-// ============================================
-// AUTH API - For Dashboard Login
-// ============================================
-
-const authAPI = {
-    signUp: async (email, password) => {
-        try {
-            // Check if user already exists
-            const existing = await supabase.table('users').select('*', `email=eq.${email}`);
-            if (existing && existing.length > 0) {
-                throw new Error('البريد الإلكتروني مستخدم بالفعل');
-            }
-            
-            // Create new user
-            const response = await supabase.table('users').insert({
-                email,
-                password,
-                full_name: 'مستخدم جديد',
-                role: 'teacher'
-            });
-            
-            if (response) {
-                const user = response[0];
+// Export for global use in other modules (like auth.js)
+window.supabaseClient = {
+    url: SUPABASE_URL,
+    anonKey: SUPABASE_ANON_KEY,
+    
+    // Simple database client
+    client: {
+        // Query profiles table
+        from: function(tableName) {
+            const self = this;
+            return {
+                tableName: tableName,
+                filters: {},
                 
-                // Generate real JWT token
-                const jwtToken = await jwtHelper.sign({
-                    sub: user.id || email,
-                    email: email,
-                    aud: 'authenticated',
-                    role: 'authenticated'
-                });
+                select: function(columns = '*') {
+                    this.columns = columns;
+                    return this;
+                },
                 
-                localStorage.setItem('sb_user', JSON.stringify(user));
-                localStorage.setItem('sb_token', 'token_' + Date.now()); // Keep for backward compatibility
-                localStorage.setItem('sb_jwt_token', jwtToken); // Store real JWT for API calls
-                return user;
+                eq: function(column, value) {
+                    this.filters[column] = value;
+                    return this;
+                },
+                
+                single: async function() {
+                    try {
+                        let url = `${SUPABASE_URL}/rest/v1/${this.tableName}?select=${this.columns || '*'}`;
+                        
+                        // Add filters
+                        for (const [col, val] of Object.entries(this.filters)) {
+                            url += `&${col}=eq.${encodeURIComponent(val)}`;
+                        }
+                        
+                        url += '&limit=1';
+                        
+                        const response = await fetch(url, {
+                            method: 'GET',
+                            headers: {
+                                'apikey': SUPABASE_ANON_KEY,
+                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                            }
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (!response.ok) {
+                            return { data: null, error: { message: 'Query failed' } };
+                        }
+                        
+                        return {
+                            data: Array.isArray(data) && data.length > 0 ? data[0] : null,
+                            error: null
+                        };
+                    } catch (error) {
+                        return { data: null, error: { message: error.message } };
+                    }
+                }
+            };
+        },
+        
+        // Call PostgreSQL functions
+        rpc: async function(functionName, params) {
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/rpc/${functionName}`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(params)
+                    }
+                );
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    return {
+                        data: null,
+                        error: { message: data?.message || 'RPC call failed' }
+                    };
+                }
+                
+                return {
+                    data: data,
+                    error: null
+                };
+            } catch (error) {
+                return {
+                    data: null,
+                    error: { message: error.message }
+                };
             }
-            throw new Error('Signup failed');
-        } catch (error) {
-            console.error('Signup error:', error);
-            throw error;
         }
-    },
-
-    signIn: async (email, password) => {
-        try {
-            console.log('Attempting login with email:', email);
-            
-            // Build proper filter string
-            const filter = `email=eq.${encodeURIComponent(email)}`;
-            console.log('Filter:', filter);
-            
-            // Query users table with direct REST call
-            const endpoint = `/users?select=*&${filter}`;
-            const users = await supabase.request('GET', endpoint);
-            
-            console.log('Found users:', users);
-            
-            if (!users || users.length === 0) {
-                throw new Error('البريد الإلكتروني أو كلمة المرور غير صحيحة');
-            }
-            
-            const user = users[0];
-            console.log('User found:', user);
-            
-            // Simple password check (not hashed - for testing only)
-            if (user.password !== password) {
-                console.log('Password mismatch. Expected:', user.password, 'Got:', password);
-                throw new Error('البريد الإلكتروني أو كلمة المرور غير صحيحة');
-            }
-            
-            // Generate real JWT token
-            const jwtToken = await jwtHelper.sign({
-                sub: user.id || email,
-                email: email,
-                aud: 'authenticated',
-                role: 'authenticated'
-            });
-            
-            console.log('JWT token generated:', jwtToken);
-            console.log('JWT token parts:', jwtToken.split('.').map((part, i) => ({
-                part: i === 0 ? 'header' : i === 1 ? 'payload' : 'signature',
-                length: part.length,
-                value: i < 2 ? JSON.parse(atob(part.padEnd(part.length + (4 - part.length % 4) % 4, '='))) : part.substring(0, 20) + '...'
-            })));
-            
-            // Store session with real JWT token
-            localStorage.setItem('sb_user', JSON.stringify(user));
-            localStorage.setItem('sb_token', 'token_' + Date.now()); // Keep for backward compatibility
-            localStorage.setItem('sb_jwt_token', jwtToken); // Store real JWT for API calls
-            
-            console.log('Login successful');
-            return user;
-        } catch (error) {
-            console.error('Login error:', error);
-            throw error;
-        }
-    },
-
-    signOut: async () => {
-        localStorage.removeItem('sb_user');
-        localStorage.removeItem('sb_token');
-        localStorage.removeItem('sb_jwt_token');
-        return true;
-    },
-
-    getSession: () => {
-        const user = localStorage.getItem('sb_user');
-        const token = localStorage.getItem('sb_token');
-        const jwtToken = localStorage.getItem('sb_jwt_token');
-        return user && token ? JSON.parse(user) : null;
     }
 };

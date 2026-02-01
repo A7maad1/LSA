@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعداد بيانات المسؤول</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1A73E8 0%, #2ECC71 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cairo', sans-serif;
+            padding: 20px;
+        }
+        
+        .setup-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #1A73E8;
+            margin-bottom: 10px;
+            font-size: 28px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #856404;
+            line-height: 1.5;
+        }
+        
+        .warning strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #1A73E8;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+        
+        input::placeholder {
+            color: #999;
+        }
+        
+        .password-strength {
+            font-size: 12px;
+            margin-top: 5px;
+            padding: 8px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .password-strength.weak {
+            background-color: #ffe6e6;
+            color: #cc0000;
+            display: block;
+        }
+        
+        .password-strength.medium {
+            background-color: #fff3cd;
+            color: #856404;
+            display: block;
+        }
+        
+        .password-strength.strong {
+            background-color: #e6ffe6;
+            color: #006600;
+            display: block;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        .btn-save {
+            background-color: #1A73E8;
+            color: white;
+        }
+        
+        .btn-save:hover:not(:disabled) {
+            background-color: #1557b0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(26, 115, 232, 0.3);
+        }
+        
+        .btn-save:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-cancel {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-cancel:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+        }
+        
+        .message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .message.success {
+            background-color: #e6ffe6;
+            color: #006600;
+            display: block;
+        }
+        
+        .message.error {
+            background-color: #ffe6e6;
+            color: #cc0000;
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 600px) {
+            .setup-container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <h1>🔒 إعداد المسؤول</h1>
+        <p class="subtitle">تعيين بيانات دخول المسؤول الأول</p>
+        
+        <div class="warning">
+            <strong>⚠️ تحذير مهم</strong>
+            احفظ بيانات الدخول بعناية. لن تتمكن من الوصول إلى لوحة التحكم بدونها. يمكنك تغييرها لاحقاً من خلال أدوات المتصفح.
+        </div>
+        
+        <form id="setupForm">
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    placeholder="admin@schoolname.com" 
+                    required
+                    autocomplete="email"
+                >
+                <p class="help-text">استخدم بريداً إلكترونياً سهل التذكر</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">كلمة المرور</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    placeholder="أدخل كلمة مرور قوية" 
+                    required
+                    minlength="8"
+                    autocomplete="new-password"
+                >
+                <div class="password-strength" id="passwordStrength"></div>
+                <p class="help-text">8 أحرف على الأقل (حروف، أرقام، رموز)</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">تأكيد كلمة المرور</label>
+                <input 
+                    type="password" 
+                    id="confirmPassword" 
+                    placeholder="أعد كتابة كلمة المرور" 
+                    required
+                    minlength="8"
+                    autocomplete="new-password"
+                >
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-save" id="submitBtn">💾 حفظ البيانات</button>
+                <button type="button" class="btn-cancel" onclick="window.location.href='login.html'">إلغاء</button>
+            </div>
+            
+            <p class="message" id="message"></p>
+        </form>
+    </div>
+    
+    <script>
+        // Check if credentials already set
+        window.addEventListener('load', function() {
+            const adminEmail = localStorage.getItem('adminEmail');
+            if (adminEmail) {
+                const message = document.getElementById('message');
+                message.textContent = '✓ تم تعيين بيانات المسؤول بالفعل. يمكنك الذهاب لتسجيل الدخول.';
+                message.className = 'message success';
+                
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 3000);
+            }
+        });
+        
+        // Password strength checker
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strength = checkPasswordStrength(password);
+            updateStrengthIndicator(strength);
+        });
+        
+        function checkPasswordStrength(password) {
+            if (password.length === 0) return 'empty';
+            if (password.length < 8) return 'weak';
+            
+            const hasNumber = /\d/.test(password);
+            const hasLower = /[a-z]/.test(password);
+            const hasUpper = /[A-Z]/.test(password);
+            const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+            
+            const strength = [hasNumber, hasLower, hasUpper, hasSpecial].filter(Boolean).length;
+            
+            if (strength < 2) return 'weak';
+            if (strength < 3) return 'medium';
+            return 'strong';
+        }
+        
+        function updateStrengthIndicator(strength) {
+            const strengthEl = document.getElementById('passwordStrength');
+            strengthEl.className = 'password-strength';
+            
+            if (strength === 'empty') {
+                strengthEl.style.display = 'none';
+            } else if (strength === 'weak') {
+                strengthEl.className = 'password-strength weak';
+                strengthEl.textContent = '⚠️ كلمة مرور ضعيفة - أضف أرقاماً وحروفاً كبيرة';
+            } else if (strength === 'medium') {
+                strengthEl.className = 'password-strength medium';
+                strengthEl.textContent = '⚡ كلمة مرور متوسطة - أضفت شيئاً إضافياً للأمان';
+            } else {
+                strengthEl.className = 'password-strength strong';
+                strengthEl.textContent = '✓ كلمة مرور قوية - جيدة جداً!';
+            }
+        }
+        
+        // Form submission
+        document.getElementById('setupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const message = document.getElementById('message');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Clear previous message
+            message.style.display = 'none';
+            
+            // Validate email
+            if (!email || !email.includes('@')) {
+                message.textContent = '❌ البريد الإلكتروني غير صحيح';
+                message.className = 'message error';
+                message.style.display = 'block';
+                return;
+            }
+            
+            // Validate password length
+            if (password.length < 8) {
+                message.textContent = '❌ كلمة المرور يجب أن تكون 8 أحرف على الأقل';
+                message.className = 'message error';
+                message.style.display = 'block';
+                return;
+            }
+            
+            // Check passwords match
+            if (password !== confirmPassword) {
+                message.textContent = '❌ كلمات المرور غير متطابقة';
+                message.className = 'message error';
+                message.style.display = 'block';
+                return;
+            }
+            
+            // Show saving state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري الحفظ...';
+            
+            // Simulate saving delay
+            setTimeout(() => {
+                // Save to localStorage
+                localStorage.setItem('adminEmail', email);
+                localStorage.setItem('adminPassword', password);
+                
+                message.textContent = '✓ تم حفظ بيانات المسؤول بنجاح!\n\nالبريد: ' + email + '\n\nسيتم نقلك لتسجيل الدخول...';
+                message.className = 'message success';
+                message.style.display = 'block';
+                
+                // Log for verification
+                console.log('Admin credentials saved:', {
+                    email: email,
+                    password: '***' + password.slice(-3),
+                    timestamp: new Date().toISOString()
+                });
+                
+                // Redirect to login after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }, 500);
+        });
+    </script>
+</body>
+</html>

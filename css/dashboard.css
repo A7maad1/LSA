@@ -974,4 +974,118 @@
     }
 }
 
+/* ============================================
+   GALLERY STYLES
+   ============================================ */
+
+.gallery-admin-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.gallery-items-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.gallery-item-card {
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.gallery-item-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.gallery-item-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: var(--light-gray);
+}
+
+.gallery-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item-card:hover .gallery-item-image img {
+    transform: scale(1.05);
+}
+
+.gallery-item-info {
+    padding: 15px;
+}
+
+.gallery-item-info h4 {
+    margin: 0 0 8px 0;
+    color: var(--primary-blue);
+    font-size: 16px;
+    word-break: break-word;
+}
+
+.gallery-item-info p {
+    margin: 0 0 8px 0;
+    color: var(--text-color);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.gallery-item-date {
+    color: var(--secondary-color);
+    font-size: 12px;
+}
+
+.gallery-item-card .item-actions {
+    padding: 10px 15px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: center;
+}
+
+.gallery-item-card .item-delete {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .gallery-admin-list,
+    .gallery-items-list {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+    
+    .gallery-item-image {
+        height: 150px;
+    }
+    
+    .gallery-item-info {
+        padding: 12px;
+    }
+    
+    .gallery-item-info h4 {
+        font-size: 14px;
+    }
+    
+    .gallery-item-info p {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-items-list {
+        grid-template-columns: 1fr;
+    }
+}
+
 

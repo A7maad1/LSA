@@ -453,6 +453,41 @@ body {
     background: #27ae60;
 }
 
+.announcement-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.announcement-download-pdf {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: linear-gradient(135deg, var(--primary-blue) 0%, #2980b9 100%);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+    text-transform: none;
+}
+
+.announcement-download-pdf:hover {
+    background: linear-gradient(135deg, #2980b9 0%, #1f618d 100%);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+    transform: translateY(-2px);
+}
+
+.announcement-download-pdf:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(52, 152, 219, 0.3);
+}
+
 /* ============================================
    MEETINGS LIST
    ============================================ */
