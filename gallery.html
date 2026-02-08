@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ثانوية صلاح الدين الأيوبي – حي الفداء – الدار البيضاء</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/lightbox.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <script src="javascript/toast.js" defer></script>
+    <script src="javascript/supabase-client.js" defer></script>
+    <script src="javascript/supabase-api.js" defer></script>
+    <script src="javascript/gallery-manager.js" defer></script>
+    <script src="javascript/email-notifications.js" defer></script>
+    <script src="javascript/accessibility.js" defer></script>
+    <script src="javascript/app.js" defer></script>
+    <script src="javascript/certificates.js" defer></script>
+    <script src="javascript/navbar.js" defer></script>
+    <script src="javascript/script.js" defer></script>
+</head>
+
+<body>
+    <!-- HEADER WITH LOGO -->
+    <header class="header">
+        <div class="header-container">
+            <nav class="navbar">
+                <button class="menu-toggle">☰</button>
+                <div class="ministry-logo" style="display: flex; align-items: center; gap: 15px;">
+                    <img src="work image 1.jpg" alt="وزارة التربية الوطنية والتعليم الأولي والرياضة - المملكة المغربية"
+                        style="width: 60px; height: 60px; object-fit: contain;">
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="announcements.html">الإعلانات</a></li>
+                    <li><a href="exams.html">الامتحانات</a></li>
+                    <li><a href="competitions.html">المسابقات</a></li>
+                    <li><a href="memos.html">المذكرات</a></li>
+                    <li><a href="activities.html">الأنشطة</a></li>
+                    <li><a href="holidays.html">العطل</a></li>
+                    <li><a href="index.html#certificates">الشهادات</a></li>
+                    <li><a href="gallery.html" class="active">المعرض</a></li>
+                    <li><a href="contact.html">اتصل بنا</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <div class="container">
+            <h1>معرض الصور</h1>
+            <p>توثيق حي لأنشطة وفعاليات المؤسسة</p>
+        </div>
+    </div>
+
+    <!-- GALLERY SECTION -->
+    <section class="gallery-section" id="gallery">
+        <div class="container">
+            <!-- Gallery Controls -->
+            <div class="gallery-controls">
+                <div class="gallery-search">
+                    <input type="text" id="gallerySearch" placeholder="ابحث عن صورة..." aria-label="بحث في المعرض">
+                </div>
+                <div class="sort-buttons">
+                    <button class="sort-btn active" data-sort="newest" aria-label="ترتيب الأحدث أولا">الأحدث</button>
+                    <button class="sort-btn" data-sort="oldest" aria-label="ترتيب الأقدم أولا">الأقدم</button>
+                    <button class="sort-btn" data-sort="a-z" aria-label="ترتيب أبجدي">أ-ي</button>
+                </div>
+            </div>
+
+            <div class="gallery-grid" id="galleryGrid">
+                <div class="gallery-item">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                        <rect width="400" height="300" fill="#e8f4f8" />
+                        <circle cx="200" cy="120" r="50" fill="#1A73E8" opacity="0.2" />
+                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">حفل التكريم</text>
+                    </svg>
+                    <div class="gallery-overlay">
+                        <p>حفل التكريم</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                        <rect width="400" height="300" fill="#f0e8f8" />
+                        <circle cx="150" cy="120" r="40" fill="#00B050" opacity="0.2" />
+                        <circle cx="250" cy="150" r="40" fill="#00B050" opacity="0.2" />
+                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">نشاط رياضي</text>
+                    </svg>
+                    <div class="gallery-overlay">
+                        <p>نشاط رياضي</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                        <rect width="400" height="300" fill="#f8f4e8" />
+                        <rect x="80" y="60" width="240" height="180" fill="none" stroke="#FF9800" stroke-width="3"
+                            opacity="0.3" />
+                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">اجتماع الأساتذة</text>
+                    </svg>
+                    <div class="gallery-overlay">
+                        <p>اجتماع الأساتذة</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                        <rect width="400" height="300" fill="#e8f8f4" />
+                        <polygon points="200,80 280,180 120,180" fill="#4CAF50" opacity="0.2" />
+                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">مسابقة علمية</text>
+                    </svg>
+                    <div class="gallery-overlay">
+                        <p>مسابقة علمية</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                        <rect width="400" height="300" fill="#f8e8f0" />
+                        <circle cx="200" cy="140" r="60" fill="#E91E63" opacity="0.2" />
+                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">حفل التخريج</text>
+                    </svg>
+                    <div class="gallery-overlay">
+                        <p>حفل التخريج</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                        <rect width="400" height="300" fill="#f4e8f8" />
+                        <rect x="100" y="80" width="60" height="120" fill="#9C27B0" opacity="0.2" />
+                        <rect x="200" y="100" width="60" height="100" fill="#9C27B0" opacity="0.2" />
+                        <rect x="300" y="60" width="60" height="140" fill="#9C27B0" opacity="0.2" />
+                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">نشاط ثقافي</text>
+                    </svg>
+                    <div class="gallery-overlay">
+                        <p>نشاط ثقافي</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                        <rect width="400" height="300" fill="#e8f8e8" />
+                        <path d="M100 200 L150 100 L200 150 L250 80 L300 180" stroke="#00897B" stroke-width="3"
+                            fill="none" opacity="0.3" />
+                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">زيارة ميدانية</text>
+                    </svg>
+                    <div class="gallery-overlay">
+                        <p>زيارة ميدانية</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                        <rect width="400" height="300" fill="#f8f0e8" />
+                        <circle cx="200" cy="100" r="40" fill="#FF5722" opacity="0.2" />
+                        <path d="M200 140 L240 200 L160 200 Z" fill="#FF5722" opacity="0.2" />
+                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">افتتاح المشروع</text>
+                    </svg>
+                    <div class="gallery-overlay">
+                        <p>افتتاح المشروع</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>ثانوية صلاح الدين الأيوبي</h3>
+                <p>مؤسسة تعليمية متميزة في قلب الدار البيضاء، متخصصة في تقديم جودة عالية من التعليم</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>روابط سريعة</h3>
+                <ul>
+                    <li><a href="#home">الرئيسية</a></li>
+                    <li><a href="#activities">الأنشطة</a></li>
+                    <li><a href="#memos">المذكرات</a></li>
+                    <li><a href="#contact">اتصل بنا</a></li>
+                    <li><a href="contact.html" class="admin-btn">لوحة الإدارة</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>وزارة التربية الوطنية</h3>
+                <ul>
+                    <li><a href="#">الموقع الرسمي للوزارة</a></li>
+                    <li><a href="#">البوابة الإلكترونية</a></li>
+                    <li><a href="#">الخدمات الإلكترونية</a></li>
+                    <li><a href="#">الدعم الفني</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>التواصل</h3>
+                <p>📧 info@saladdin-school.ma</p>
+                <p>📞 +212 5 22 XX XX XX</p>
+                <p>📍 حي الفداء - الدار البيضاء</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 ثانوية صلاح الدين الأيوبي. جميع الحقوق محفوظة.</p>
+            <p>تم تطوير الموقع بواسطة فريق التكنولوجيا بالمؤسسة</p>
+        </div>
+    </footer>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox-overlay" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose" aria-label="إغلاق معرض الصور">✕</button>
+        <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="الصورة السابقة">❮</button>
+        <div class="lightbox-container">
+            <img id="lightboxImage" class="lightbox-image" alt="" />
+        </div>
+        <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="الصورة التالية">❯</button>
+        <div class="lightbox-title" id="lightboxTitle"></div>
+        <div class="lightbox-counter" id="lightboxCounter"></div>
+    </div>
+
+    <!-- CONFIRMATION DIALOG -->
+    <div class="confirm-dialog" id="confirmDialog">
+        <div class="confirm-dialog-box">
+            <h3 id="confirmTitle">هل أنت متأكد؟</h3>
+            <p id="confirmMessage">هذا الإجراء لا يمكن التراجع عنه.</p>
+            <div class="confirm-dialog-buttons">
+                <button class="confirm-dialog-btn confirm" id="confirmYes">حذف</button>
+                <button class="confirm-dialog-btn cancel" id="confirmNo">إلغاء</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

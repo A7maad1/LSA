@@ -221,7 +221,7 @@ class GalleryManager {
 // ============================================
 
 class ConfirmDialog {
-    static show(title = 'هل أنت متأكد؟', message = 'هذا الإجراء لا يمكن التراجع عنه.') {
+    static show(title = 'هل أنت متأكد؟', message = 'هذا الإجراء لا يمكن التراجع عنه.', confirmText = 'تأكيد', confirmClass = 'confirm') {
         return new Promise((resolve) => {
             const dialog = document.getElementById('confirmDialog');
             const titleEl = document.getElementById('confirmTitle');
@@ -236,6 +236,13 @@ class ConfirmDialog {
 
             titleEl.textContent = title;
             messageEl.textContent = message;
+
+            // Set button text and style
+            if (yesBtn) {
+                yesBtn.textContent = confirmText;
+                // Update class (primary for save, danger for delete)
+                yesBtn.className = `confirm-dialog-btn ${confirmClass}`;
+            }
 
             const handleYes = () => {
                 dialog.classList.remove('active');

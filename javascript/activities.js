@@ -5,7 +5,7 @@
 let allActivities = [];
 let filteredActivities = [];
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeActivitiesPage();
 });
 
@@ -15,42 +15,32 @@ async function initializeActivitiesPage() {
 }
 
 function setupEventListeners() {
-    const searchInput = document.getElementById('activitySearch');
-    const sortSelect = document.getElementById('activitySort');
-    
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.getElementById('sortSelect');
+
     if (searchInput) {
         searchInput.addEventListener('input', handleSearch);
     }
-    
+
     if (sortSelect) {
         sortSelect.addEventListener('change', handleSort);
-    }
-    
-    // Mobile menu toggle
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navMenu = document.querySelector('.nav-menu');
-    
-    if (menuToggle) {
-        menuToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
     }
 }
 
 async function loadActivitiesData() {
     const container = document.getElementById('activitiesContainer');
-    
+
     try {
         container.innerHTML = '<p class="loading">جاري تحميل الأنشطة...</p>';
-        
+
         allActivities = await API.activities.getAll();
         filteredActivities = [...allActivities];
-        
+
         if (allActivities.length === 0) {
             container.innerHTML = '<p class="loading">لا توجد أنشطة متاحة حالياً</p>';
             return;
         }
-        
+
         renderActivities(filteredActivities);
     } catch (error) {
         console.error('Error loading activities:', error);
@@ -60,12 +50,12 @@ async function loadActivitiesData() {
 
 function renderActivities(activities) {
     const container = document.getElementById('activitiesContainer');
-    
+
     if (activities.length === 0) {
         container.innerHTML = '<p class="loading">لم يتم العثور على أنشطة</p>';
         return;
     }
-    
+
     container.innerHTML = activities.map(activity => `
         <div class="activity-card">
             ${activity.image_url ? `<img src="${activity.image_url}" alt="${activity.title}">` : '<div class="activity-placeholder">📸</div>'}
@@ -80,18 +70,18 @@ function renderActivities(activities) {
 
 function handleSearch(e) {
     const searchTerm = e.target.value.toLowerCase();
-    
+
     filteredActivities = allActivities.filter(activity =>
         activity.title.toLowerCase().includes(searchTerm) ||
         activity.description.toLowerCase().includes(searchTerm)
     );
-    
+
     renderActivities(filteredActivities);
 }
 
 function handleSort(e) {
     const sortValue = e.target.value;
-    
+
     if (sortValue === 'date-newest') {
         filteredActivities.sort((a, b) => new Date(b.date) - new Date(a.date));
     } else if (sortValue === 'date-oldest') {
@@ -101,11 +91,11 @@ function handleSort(e) {
     } else if (sortValue === 'name-desc') {
         filteredActivities.sort((a, b) => b.title.localeCompare(a.title, 'ar'));
     }
-    
+
     renderActivities(filteredActivities);
 }
 
 function formatDate(dateString) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('ar-EG', options);
+    return new Date(dateString).toLocaleDateString('ar-EG-u-nu-latn', options);
 }

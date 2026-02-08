@@ -147,7 +147,7 @@ const AppConfig = {
         imageCompressionQuality: 0.8,
         maxImageWidth: 1200,
         maxImageHeight: 1200,
-        maxFileSize: 5 * 1024 * 1024, // 5MB
+        maxFileSize: 50 * 1024 * 1024, // 50MB
         supportedFormats: ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
     },
 
@@ -155,7 +155,7 @@ const AppConfig = {
     // FILE UPLOAD CONFIGURATION
     // ============================================
     upload: {
-        maxFileSize: 10 * 1024 * 1024, // 10MB
+        maxFileSize: 50 * 1024 * 1024, // 50MB
         supportedMimeTypes: [
             'application/pdf',
             'image/jpeg',

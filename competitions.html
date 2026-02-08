@@ -4,17 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الاجتماعات - ثانوية صلاح الدين الأيوبي</title>
+    <title>المسابقات - ثانوية صلاح الدين الأيوبي</title>
     <link rel="stylesheet" href="css/styles-dynamic.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <script src="javascript/toast.js" defer></script>
     <script src="javascript/supabase-client.js" defer></script>
     <script src="javascript/supabase-api.js" defer></script>
     <script src="javascript/navbar.js" defer></script>
-    <script src="javascript/meetings.js" defer></script>
+    <script src="javascript/announcements.js" defer></script>
 </head>
 
-<body>
+<body data-page-category="مسابقات">
     <!-- NAVIGATION HEADER -->
     <header class="header">
         <div class="header-container">
@@ -28,9 +28,8 @@
                     <li><a href="index.html">الرئيسية</a></li>
                     <li><a href="announcements.html">الإعلانات</a></li>
                     <li><a href="exams.html">الامتحانات</a></li>
-                    <li><a href="competitions.html">المسابقات</a></li>
+                    <li><a href="competitions.html" class="active">المسابقات</a></li>
                     <li><a href="memos.html">المذكرات</a></li>
-                    <li><a href="meetings.html" class="active">الاجتماعات</a></li>
                     <li><a href="activities.html">الأنشطة</a></li>
                     <li><a href="holidays.html">العطل</a></li>
                     <li><a href="index.html#certificates">الشهادات</a></li>
@@ -44,15 +43,24 @@
     <!-- PAGE HEADER -->
     <section class="page-header">
         <div class="container">
-            <h1>الاجتماعات المقررة</h1>
-            <p>جدول الاجتماعات والفعاليات المهمة</p>
+            <h1>المسابقات</h1>
+            <p>المسابقات المدرسية، الثقافية، والرياضية</p>
         </div>
     </section>
 
-    <!-- MEETINGS LIST -->
+    <!-- SEARCH ONLY -->
     <section class="section">
         <div class="container">
-            <div class="meetings-list" id="meetingsContainer">
+            <div class="filters">
+                <input type="text" id="searchInput" class="search-box" placeholder="ابحث في المسابقات...">
+            </div>
+        </div>
+    </section>
+
+    <!-- ANNOUNCEMENTS LIST -->
+    <section class="section">
+        <div class="container">
+            <div class="announcements-list" id="announcementsContainer">
                 <div class="skeleton-item"></div>
                 <div class="skeleton-item"></div>
                 <div class="skeleton-item"></div>
@@ -66,8 +74,6 @@
             <p>&copy; 2025 ثانوية صلاح الدين الأيوبي. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
-
-    <!-- Dynamic page scripts handled in head with defer -->
 </body>
 
 </html>

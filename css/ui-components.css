@@ -671,39 +671,220 @@
    RESPONSIVE
    ============================================ */
 
+/* Tablet Breakpoint */
+@media (max-width: 1024px) {
+    .notification {
+        min-width: 250px;
+        max-width: 350px;
+    }
+
+    .modal-box {
+        width: 90%;
+        max-width: 500px;
+    }
+
+    .search-filter-container {
+        gap: 12px;
+    }
+
+    .pagination {
+        gap: 6px;
+    }
+}
+
+/* Mobile Breakpoint */
 @media (max-width: 768px) {
     .notification-center {
         right: 10px;
         top: 10px;
         max-width: calc(100% - 20px);
+        left: 10px;
     }
     
     .notification {
         min-width: auto;
+        width: 100%;
+        max-width: calc(100% - 20px);
+        padding: 12px 15px;
+        font-size: 13px;
+    }
+    
+    .notification-close {
+        width: 24px;
+        height: 24px;
+        font-size: 18px;
+    }
+    
+    .modal-backdrop {
+        padding: 15px;
     }
     
     .modal-box {
         width: 95%;
+        max-width: 100%;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .modal-header {
+        padding: 15px 0;
+    }
+    
+    .modal-header h3 {
+        font-size: 18px;
+    }
+
+    .modal-body {
+        padding: 15px 0;
+        max-height: calc(100vh - 200px);
+    }
+
+    .modal-footer {
+        padding: 15px 0;
+    }
+
+    .modal-button {
+        padding: 10px 15px;
+        font-size: 13px;
     }
     
     .search-filter-container {
         flex-direction: column;
+        gap: 10px;
     }
     
     .search-box {
         min-width: auto;
+        width: 100%;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .filter-select {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 13px;
     }
     
     .pagination {
         flex-wrap: wrap;
-        gap: 4px;
+        gap: 5px;
+        justify-content: center;
     }
     
     .pagination-info {
         flex-basis: 100%;
         order: 3;
-        margin-left: 0;
+        margin: 10px 0 0 0;
         text-align: center;
+        font-size: 12px;
+    }
+
+    .pagination-button {
+        padding: 8px 10px;
+        font-size: 12px;
+        min-width: 32px;
+    }
+}
+
+/* Small Mobile Breakpoint */
+@media (max-width: 480px) {
+    .notification-center {
+        right: 8px;
+        top: 8px;
+        left: 8px;
+    }
+
+    .notification {
+        min-width: auto;
+        width: 100%;
+        max-width: calc(100% - 16px);
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+
+    .notification-close {
+        width: 20px;
+        height: 20px;
+        font-size: 16px;
+    }
+
+    .modal-backdrop {
+        padding: 10px;
+    }
+
+    .modal-box {
+        width: 100%;
+        max-width: 100%;
+        padding: 15px;
+        border-radius: 6px;
+    }
+
+    .modal-header {
+        padding: 12px 0;
+    }
+
+    .modal-header h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    .modal-header p {
+        font-size: 12px;
+    }
+
+    .modal-body {
+        padding: 12px 0;
+        max-height: calc(100vh - 180px);
+    }
+
+    .modal-footer {
+        padding: 12px 0;
+        gap: 8px;
+    }
+
+    .modal-button {
+        padding: 9px 12px;
+        font-size: 12px;
+        flex: 1;
+    }
+
+    .search-filter-container {
+        gap: 8px;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 9px 10px;
+        font-size: 12px;
+    }
+
+    .filter-select {
+        width: 100%;
+        padding: 9px 10px;
+        font-size: 12px;
+    }
+
+    .pagination {
+        gap: 4px;
+    }
+
+    .pagination-button {
+        padding: 7px 8px;
+        font-size: 11px;
+        min-width: 28px;
+    }
+
+    .pagination-info {
+        font-size: 11px;
     }
 }
 

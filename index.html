@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,31 +8,37 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/lightbox.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    <script src="javascript/toast.js"></script>
-    <script src="javascript/supabase-client.js"></script>
-    <script src="javascript/supabase-api.js"></script>
-    <script src="javascript/gallery-manager.js"></script>
-    <script src="javascript/email-notifications.js"></script>
-    <script src="javascript/accessibility.js"></script>
-    <script src="javascript/app.js"></script>
-    <script src="javascript/certificates.js"></script>
-    <script src="javascript/script.js"></script>
+    <script src="javascript/toast.js" defer></script>
+    <script src="javascript/supabase-client.js" defer></script>
+    <script src="javascript/supabase-api.js" defer></script>
+    <script src="javascript/gallery-manager.js" defer></script>
+    <script src="javascript/email-notifications.js" defer></script>
+    <script src="javascript/accessibility.js" defer></script>
+    <script src="javascript/app.js" defer></script>
+    <script src="javascript/certificates.js" defer></script>
+    <script src="javascript/navbar.js" defer></script>
+    <script src="javascript/script.js" defer></script>
 </head>
+
 <body>
     <!-- HEADER WITH LOGO -->
     <header class="header">
         <div class="header-container">
             <nav class="navbar">
                 <button class="menu-toggle">☰</button>
-            <div class="ministry-logo">
-                <img src="work image 1.jpg" alt="وزارة التربية الوطنية والتعليم الأولي والرياضة - المملكة المغربية">
-            </div>
+                <div class="ministry-logo" style="display: flex; align-items: center; gap: 15px;">
+                    <img src="work image 1.jpg" alt="وزارة التربية الوطنية والتعليم الأولي والرياضة - المملكة المغربية"
+                        style="width: 60px; height: 60px; object-fit: contain;">
+                </div>
                 <ul class="nav-menu">
-                    <li><a href="#home">الرئيسية</a></li>
-                    <li><a href="#activities">أنشطة المؤسسة</a></li>
-                    <li><a href="#memos">المذكرات الوطنية</a></li>
-                    <li><a href="#holidays">العطل الرسمية</a></li>
-                    <li><a href="#certificates">شهادات المدرسة</a></li>
+                    <li><a href="#home" class="active">الرئيسية</a></li>
+                    <li><a href="#announcements">الإعلانات</a></li>
+                    <li><a href="#exams">الامتحانات</a></li>
+                    <li><a href="#competitions">المسابقات</a></li>
+                    <li><a href="#memos">المذكرات</a></li>
+                    <li><a href="#activities">الأنشطة</a></li>
+                    <li><a href="#holidays">العطل</a></li>
+                    <li><a href="#certificates">الشهادات</a></li>
                     <li><a href="#gallery">المعرض</a></li>
                     <li><a href="#contact">اتصل بنا</a></li>
                 </ul>
@@ -45,31 +52,62 @@
             <h1>ثانوية صلاح الدين الأيوبي</h1>
             <p>حي الفداء – الدار البيضاء</p>
             <p class="tagline">نحو مستقبل مشرق بالعلم والمعرفة</p>
+            <div class="hero-btns">
+                <button class="cta-button primary-btn">استكشف أنشطتنا</button>
+                <a href="#contact" class="secondary-btn">اتصل بنا</a>
+            </div>
         </div>
         <div class="hero-overlay"></div>
     </section>
 
-    <!-- NATIONAL MEMOS SECTION -->
+    <!-- GENERAL ANNOUNCEMENTS SECTION -->
+    <section class="memos-section" id="announcements">
+        <div class="container">
+            <h2 class="section-title">إعلانات عامة</h2>
+            <div class="memos-list" id="announcementsList">
+                <div class="loading">جاري التحميل...</div>
+            </div>
+            <div class="view-more-container" style="text-align: center; margin-top: 30px;">
+                <a href="announcements.html" class="view-more-btn">عرض جميع الإعلانات →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXAMS SECTION -->
+    <section class="memos-section" id="exams">
+        <div class="container">
+            <h2 class="section-title">الامتحانات</h2>
+            <div class="memos-list" id="examsList">
+                <div class="loading">جاري التحميل...</div>
+            </div>
+            <div class="view-more-container" style="text-align: center; margin-top: 30px;">
+                <a href="exams.html" class="view-more-btn">عرض جميع الامتحانات →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMPETITIONS SECTION -->
+    <section class="memos-section" id="competitions">
+        <div class="container">
+            <h2 class="section-title">المسابقات</h2>
+            <div class="memos-list" id="competitionsList">
+                <div class="loading">جاري التحميل...</div>
+            </div>
+            <div class="view-more-container" style="text-align: center; margin-top: 30px;">
+                <a href="competitions.html" class="view-more-btn">عرض جميع المسابقات →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- MINISTRY MEMOS SECTION -->
     <section class="memos-section" id="memos">
         <div class="container">
-            <h2 class="section-title">إعلانات المدرسة</h2>
-            
-            <div class="memos-controls">
-                <input type="text" id="memoSearch" class="search-bar" placeholder="ابحث عن مذكرة...">
-                <div class="filter-buttons">
-                    <button class="filter-btn active" data-filter="all">الكل</button>
-                    <button class="filter-btn" data-filter="exams">امتحانات</button>
-                    <button class="filter-btn" data-filter="competitions">مسابقات</button>
-                    <button class="filter-btn" data-filter="ministry">مذكرات وزارية</button>
-                </div>
+            <h2 class="section-title">المذكرات الوزارية</h2>
+            <div class="memos-list" id="ministryList">
+                <div class="loading">جاري التحميل...</div>
             </div>
-
-            <div class="memos-timestamp">
-                آخر تحديث: <span id="lastUpdated">18 نوفمبر 2025</span>
-            </div>
-
-            <div class="memos-list" id="memosList">
-                <!-- Memos will be populated by JavaScript -->
+            <div class="view-more-container" style="text-align: center; margin-top: 30px;">
+                <a href="memos.html" class="view-more-btn">عرض جميع المذكرات →</a>
             </div>
         </div>
     </section>
@@ -78,7 +116,7 @@
     <section class="holidays-section" id="holidays">
         <div class="container">
             <h2 class="section-title">العطل الرسمية بالمغرب</h2>
-            
+
             <div class="holidays-table-wrapper">
                 <table class="holidays-table">
                     <thead>
@@ -154,9 +192,13 @@
     <section class="activities-section" id="activities">
         <div class="container">
             <h2 class="section-title">أنشطة المؤسسة</h2>
-            
+
             <div class="activities-grid" id="activitiesGrid">
                 <!-- Activities will be populated by JavaScript -->
+            </div>
+
+            <div class="view-more-container" style="text-align: center; margin-top: 40px;">
+                <a href="activities.html" class="view-more-btn">عرض جميع الأنشطة →</a>
             </div>
         </div>
     </section>
@@ -165,7 +207,7 @@
     <section class="certificate-section" id="certificates">
         <div class="container">
             <h2 class="section-title">الشهادة المدرسية</h2>
-            
+
             <div class="certificate-form-container">
                 <div class="certificate-form-wrapper">
                     <form id="certificateForm" class="certificate-form">
@@ -173,22 +215,25 @@
                             <h3>طلب شهادة مدرسية</h3>
                             <p class="form-subtitle">يرجى ملء البيانات المطلوبة بدقة</p>
                         </div>
-                        
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="certFirstName">الاسم *</label>
-                                <input type="text" id="certFirstName" name="first_name" placeholder="أدخل الاسم الأول" required>
+                                <input type="text" id="certFirstName" name="first_name" placeholder="أدخل الاسم الأول"
+                                    required>
                             </div>
                             <div class="form-group">
                                 <label for="certLastName">النسب *</label>
-                                <input type="text" id="certLastName" name="last_name" placeholder="أدخل اسم العائلة" required>
+                                <input type="text" id="certLastName" name="last_name" placeholder="أدخل اسم العائلة"
+                                    required>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="certMassarNumber">رقم المسار *</label>
-                                <input type="text" id="certMassarNumber" name="massar_number" placeholder="أدخل رقم المسار" required>
+                                <input type="text" id="certMassarNumber" name="massar_number"
+                                    placeholder="أدخل رقم المسار" required>
                             </div>
                             <div class="form-group">
                                 <label for="certDate">السنة الدراسية الحالية أو الأخيرة *</label>
@@ -215,24 +260,12 @@
     <section class="gallery-section" id="gallery">
         <div class="container">
             <h2 class="section-title">معرض الصور</h2>
-            
-            <!-- Gallery Controls -->
-            <div class="gallery-controls">
-                <div class="gallery-search">
-                    <input type="text" id="gallerySearch" placeholder="ابحث عن صورة..." aria-label="بحث في المعرض">
-                </div>
-                <div class="sort-buttons">
-                    <button class="sort-btn active" data-sort="newest" aria-label="ترتيب الأحدث أولا">الأحدث</button>
-                    <button class="sort-btn" data-sort="oldest" aria-label="ترتيب الأقدم أولا">الأقدم</button>
-                    <button class="sort-btn" data-sort="a-z" aria-label="ترتيب أبجدي">أ-ي</button>
-                </div>
-            </div>
-            
-            <div class="gallery-grid" id="galleryGrid">
+
+            <div class="gallery-grid" id="homeGalleryGrid">
                 <div class="gallery-item">
                     <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-                        <rect width="400" height="300" fill="#e8f4f8"/>
-                        <circle cx="200" cy="120" r="50" fill="#1A73E8" opacity="0.2"/>
+                        <rect width="400" height="300" fill="#e8f4f8" />
+                        <circle cx="200" cy="120" r="50" fill="#1A73E8" opacity="0.2" />
                         <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">حفل التكريم</text>
                     </svg>
                     <div class="gallery-overlay">
@@ -241,9 +274,9 @@
                 </div>
                 <div class="gallery-item">
                     <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-                        <rect width="400" height="300" fill="#f0e8f8"/>
-                        <circle cx="150" cy="120" r="40" fill="#00B050" opacity="0.2"/>
-                        <circle cx="250" cy="150" r="40" fill="#00B050" opacity="0.2"/>
+                        <rect width="400" height="300" fill="#f0e8f8" />
+                        <circle cx="150" cy="120" r="40" fill="#00B050" opacity="0.2" />
+                        <circle cx="250" cy="150" r="40" fill="#00B050" opacity="0.2" />
                         <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">نشاط رياضي</text>
                     </svg>
                     <div class="gallery-overlay">
@@ -252,8 +285,9 @@
                 </div>
                 <div class="gallery-item">
                     <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-                        <rect width="400" height="300" fill="#f8f4e8"/>
-                        <rect x="80" y="60" width="240" height="180" fill="none" stroke="#FF9800" stroke-width="3" opacity="0.3"/>
+                        <rect width="400" height="300" fill="#f8f4e8" />
+                        <rect x="80" y="60" width="240" height="180" fill="none" stroke="#FF9800" stroke-width="3"
+                            opacity="0.3" />
                         <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">اجتماع الأساتذة</text>
                     </svg>
                     <div class="gallery-overlay">
@@ -262,57 +296,18 @@
                 </div>
                 <div class="gallery-item">
                     <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-                        <rect width="400" height="300" fill="#e8f8f4"/>
-                        <polygon points="200,80 280,180 120,180" fill="#4CAF50" opacity="0.2"/>
+                        <rect width="400" height="300" fill="#e8f8f4" />
+                        <polygon points="200,80 280,180 120,180" fill="#4CAF50" opacity="0.2" />
                         <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">مسابقة علمية</text>
                     </svg>
                     <div class="gallery-overlay">
                         <p>مسابقة علمية</p>
                     </div>
                 </div>
-                <div class="gallery-item">
-                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-                        <rect width="400" height="300" fill="#f8e8f0"/>
-                        <circle cx="200" cy="140" r="60" fill="#E91E63" opacity="0.2"/>
-                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">حفل التخريج</text>
-                    </svg>
-                    <div class="gallery-overlay">
-                        <p>حفل التخريج</p>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-                        <rect width="400" height="300" fill="#f4e8f8"/>
-                        <rect x="100" y="80" width="60" height="120" fill="#9C27B0" opacity="0.2"/>
-                        <rect x="200" y="100" width="60" height="100" fill="#9C27B0" opacity="0.2"/>
-                        <rect x="300" y="60" width="60" height="140" fill="#9C27B0" opacity="0.2"/>
-                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">نشاط ثقافي</text>
-                    </svg>
-                    <div class="gallery-overlay">
-                        <p>نشاط ثقافي</p>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-                        <rect width="400" height="300" fill="#e8f8e8"/>
-                        <path d="M100 200 L150 100 L200 150 L250 80 L300 180" stroke="#00897B" stroke-width="3" fill="none" opacity="0.3"/>
-                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">زيارة ميدانية</text>
-                    </svg>
-                    <div class="gallery-overlay">
-                        <p>زيارة ميدانية</p>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-                        <rect width="400" height="300" fill="#f8f0e8"/>
-                        <circle cx="200" cy="100" r="40" fill="#FF5722" opacity="0.2"/>
-                        <path d="M200 140 L240 200 L160 200 Z" fill="#FF5722" opacity="0.2"/>
-                        <text x="200" y="280" font-size="16" text-anchor="middle" fill="#666">افتتاح المشروع</text>
-                    </svg>
-                    <div class="gallery-overlay">
-                        <p>افتتاح المشروع</p>
-                    </div>
-                </div>
+            </div>
+
+            <div class="view-more-container" style="text-align: center; margin-top: 30px;">
+                <a href="gallery.html" class="view-more-btn">عرض جميع الصور →</a>
             </div>
         </div>
     </section>
@@ -321,7 +316,7 @@
     <section class="contact-section" id="contact">
         <div class="container">
             <h2 class="section-title">اتصل بنا</h2>
-            
+
             <div class="contact-wrapper">
                 <div class="contact-info">
                     <div class="contact-item">
@@ -365,8 +360,13 @@
                 </div>
 
                 <div class="map-container">
-                    <h3 style="text-align: center; color: #1A73E8; margin-bottom: 20px; font-size: 20px;">📍 موقع المدرسة</h3>
-                    <iframe src="https://www.google.com/maps?output=embed&q=33.57134527215558,-7.589251309543613&zoom=15" width="100%" height="400" style="border: none; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <h3 style="text-align: center; color: #1A73E8; margin-bottom: 20px; font-size: 20px;">📍 موقع
+                        المدرسة</h3>
+                    <iframe
+                        src="https://www.google.com/maps?output=embed&q=33.57134527215558,-7.589251309543613&zoom=15"
+                        width="100%" height="400"
+                        style="border: none; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);"
+                        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
             </div>
         </div>
@@ -394,7 +394,7 @@
                 <!-- Activities Management -->
                 <section class="admin-section active" id="activities-section">
                     <h2>إدارة أنشطة المؤسسة</h2>
-                    
+
                     <div class="add-form">
                         <h3>إضافة نشاط جديد</h3>
                         <form id="addActivityForm">
@@ -440,7 +440,7 @@
                 <!-- Announcements Management -->
                 <section class="admin-section" id="announcements-section">
                     <h2>الإعلانات والأخبار</h2>
-                    
+
                     <div class="add-form">
                         <h3>إضافة إعلان جديد</h3>
                         <form id="addAnnouncementForm">
@@ -485,7 +485,7 @@
                 <!-- Memos Management -->
                 <section class="admin-section" id="memos-section">
                     <h2>إدارة المذكرات</h2>
-                    
+
                     <div class="add-form">
                         <h3>إضافة مذكرة جديدة</h3>
                         <form id="addMemoForm">
@@ -534,7 +534,7 @@
                 <!-- Holidays Management -->
                 <section class="admin-section" id="holidays-section">
                     <h2>إدارة العطل</h2>
-                    
+
                     <div class="add-form">
                         <h3>إضافة عطلة جديدة</h3>
                         <form id="addHolidayForm">
@@ -576,7 +576,7 @@
                 <!-- Gallery Management -->
                 <section class="admin-section" id="gallery-section">
                     <h2>إدارة المعرض</h2>
-                    
+
                     <div class="add-form">
                         <h3>إضافة صورة جديدة</h3>
                         <form id="addGalleryForm">
@@ -615,7 +615,7 @@
                 <!-- Events Management -->
                 <section class="admin-section" id="events-section">
                     <h2>الأحداث والاجتماعات</h2>
-                    
+
                     <div class="add-form">
                         <h3>إضافة حدث جديد</h3>
                         <form id="addEventForm">
@@ -680,7 +680,7 @@
                     <li><a href="#activities">الأنشطة</a></li>
                     <li><a href="#memos">المذكرات</a></li>
                     <li><a href="#contact">اتصل بنا</a></li>
-                    <li><a href="#admin-login" class="admin-btn">لوحة الإدارة</a></li>
+                    <li><a href="contact.html" class="admin-btn">لوحة الإدارة</a></li>
                 </ul>
             </div>
 
@@ -732,4 +732,5 @@
         </div>
     </div>
 </body>
+
 </html>

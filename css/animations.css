@@ -453,6 +453,58 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* ============================================
+   RESPONSIVE ANIMATIONS
+   ============================================ */
+
+@media (max-width: 768px) {
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .modal-box,
+    .notification,
+    .dropdown-menu {
+        animation-duration: 0.2s;
+    }
+}
+
+@media (max-width: 480px) {
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Reduce animation duration on small devices */
+    [class*="animate"],
+    .fade-in,
+    .slide-in {
+        animation-duration: 0.15s !important;
+    }
+}
+
+/* ============================================
    ACCESSIBILITY - REDUCED MOTION
    ============================================ */
 

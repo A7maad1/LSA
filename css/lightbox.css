@@ -104,6 +104,7 @@
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -114,6 +115,7 @@
         transform: scale(0.8);
         opacity: 0;
     }
+
     to {
         transform: scale(1);
         opacity: 1;
@@ -208,6 +210,7 @@
     0% {
         background-position: 200% 0;
     }
+
     100% {
         background-position: -200% 0;
     }
@@ -323,13 +326,24 @@
     transition: all 0.3s;
 }
 
-.confirm-dialog-btn.confirm {
+.confirm-dialog-btn.confirm,
+.confirm-dialog-btn.danger {
     background: #d32f2f;
     color: white;
 }
 
-.confirm-dialog-btn.confirm:hover {
+.confirm-dialog-btn.confirm:hover,
+.confirm-dialog-btn.danger:hover {
     background: #b71c1c;
+}
+
+.confirm-dialog-btn.primary {
+    background: #1a73e8;
+    color: white;
+}
+
+.confirm-dialog-btn.primary:hover {
+    background: #1557b0;
 }
 
 .confirm-dialog-btn.cancel {
@@ -369,24 +383,56 @@
     opacity: 0.9;
 }
 
-/* Responsive */
+/* Tablet Breakpoint */
+@media (max-width: 1024px) {
+    .lightbox-container {
+        width: 90%;
+        height: 70vh;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+    }
+
+    .gallery-item {
+        aspect-ratio: 1;
+    }
+}
+
+/* Mobile Breakpoint */
 @media (max-width: 768px) {
     .gallery-controls {
         flex-direction: column;
+        padding: 15px;
+        gap: 10px;
     }
 
     .gallery-search {
+        width: 100%;
         min-width: 100%;
+        padding: 10px 12px;
+        font-size: 13px;
     }
 
     .sort-buttons {
         width: 100%;
-        justify-content: center;
+        justify-content: space-between;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .sort-buttons button {
+        padding: 8px 12px;
+        font-size: 12px;
+        flex: 1;
+        min-width: 80px;
     }
 
     .lightbox-container {
         width: 95%;
-        height: 80vh;
+        height: 70vh;
+        border-radius: 8px;
     }
 
     .lightbox-nav {
@@ -401,9 +447,101 @@
         font-size: 24px;
     }
 
-    .confirm-dialog-box {
-        width: 90%;
-        margin: 20px;
+    .lightbox-image {
+        max-height: calc(70vh - 80px);
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+        padding: 15px;
+    }
+
+    .gallery-item {
+        aspect-ratio: 1;
+    }
+
+    .gallery-item-title {
+        font-size: 12px;
+    }
+}
+
+/* Small Mobile Breakpoint */
+@media (max-width: 480px) {
+    .gallery-controls {
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .gallery-search {
+        width: 100%;
+        padding: 9px 10px;
+        font-size: 12px;
+    }
+
+    .sort-buttons {
+        gap: 6px;
+    }
+
+    .sort-buttons button {
+        padding: 7px 10px;
+        font-size: 11px;
+    }
+
+    .lightbox-modal {
+        padding: 10px;
+    }
+
+    .lightbox-container {
+        width: 100%;
+        height: 65vh;
+        border-radius: 6px;
+    }
+
+    .lightbox-nav {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+
+    .lightbox-nav.prev {
+        left: 5px;
+    }
+
+    .lightbox-nav.next {
+        right: 5px;
+    }
+
+    .lightbox-close {
+        width: 32px;
+        height: 32px;
+        font-size: 22px;
+        top: 5px;
+        right: 5px;
+    }
+
+    .lightbox-image {
+        max-height: calc(65vh - 60px);
+    }
+
+    .lightbox-counter {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .lightbox-title {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 8px;
+        padding: 12px;
+    }
+
+    .gallery-item-title {
+        font-size: 11px;
     }
 }
 

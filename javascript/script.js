@@ -1,40 +1,20 @@
 // ============================================
-// MOBILE MENU TOGGLE
-// ============================================
-
-document.addEventListener('DOMContentLoaded', function() {
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navMenu = document.querySelector('.nav-menu');
-
-    menuToggle?.addEventListener('click', function() {
-        navMenu.classList.toggle('show');
-    });
-
-    // Close menu when clicking on a link
-    document.querySelectorAll('.nav-menu a').forEach(link => {
-        link.addEventListener('click', () => {
-            navMenu.classList.remove('show');
-        });
-    });
-});
-
-// ============================================
 // MEMO SEARCH & FILTER
 // ============================================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('memoSearch');
     const filterButtons = document.querySelectorAll('.filter-btn');
-    const memoItems = document.querySelectorAll('.memo-item');
+
 
     let currentFilter = 'all';
 
     // Filter functionality
     filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             filterButtons.forEach(btn => btn.classList.remove('active'));
             this.classList.add('active');
-            currentFilter = this.dataset.filter;
+            currentFilter = this.dataset.category;
             filterMemos();
         });
     });
@@ -44,10 +24,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function filterMemos() {
         const searchTerm = searchInput?.value.toLowerCase() || '';
+        const memoCards = document.querySelectorAll('.memo-card');
 
-        memoItems.forEach(item => {
-            const category = item.dataset.category;
-            const text = item.textContent.toLowerCase();
+        memoCards.forEach(item => {
+            // Find category from UI text or we could add data-category to memo-card in app.js
+            // Best is to update app.js to add data-category to the card
+            const title = item.querySelector('h3')?.textContent.toLowerCase() || '';
+            const content = item.querySelector('.memo-description')?.textContent.toLowerCase() || '';
+            const categoryText = item.querySelector('.memo-icon')?.textContent || '';
+
+            // Wait, app.js doesn't store the category in the card but uses an icon map.
+            // I should update app.js to include data-category in the HTML it generates.
+            const category = item.getAttribute('data-category');
 
             let showItem = true;
 
@@ -57,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Check search term
-            if (searchTerm && !text.includes(searchTerm)) {
+            if (searchTerm && !title.includes(searchTerm) && !content.includes(searchTerm)) {
                 showItem = false;
             }
 
@@ -70,12 +58,12 @@ document.addEventListener('DOMContentLoaded', function() {
 // TABS FUNCTIONALITY
 // ============================================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
 
     tabButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             const tabName = this.dataset.tab;
 
             // Remove active class from all buttons and contents
@@ -93,11 +81,11 @@ document.addEventListener('DOMContentLoaded', function() {
 // ADMIN LOGIN REDIRECT
 // ============================================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const adminLoginLink = document.querySelector('.admin-btn');
 
     // Redirect to dashboard
-    adminLoginLink?.addEventListener('click', function(e) {
+    adminLoginLink?.addEventListener('click', function (e) {
         e.preventDefault();
         window.location.href = './dashboard.html';
     });
@@ -107,12 +95,12 @@ document.addEventListener('DOMContentLoaded', function() {
 // ADMIN NAVIGATION
 // ============================================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const adminNavButtons = document.querySelectorAll('.admin-nav-btn');
     const adminSections = document.querySelectorAll('.admin-section');
 
     adminNavButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             const sectionName = this.dataset.section;
 
             // Remove active class from all buttons and sections
@@ -130,10 +118,10 @@ document.addEventListener('DOMContentLoaded', function() {
 // CONTACT FORM
 // ============================================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const contactForm = document.getElementById('contactForm');
 
-    contactForm?.addEventListener('submit', async function(e) {
+    contactForm?.addEventListener('submit', async function (e) {
         e.preventDefault();
 
         const name = document.getElementById('name').value.trim();
@@ -178,12 +166,12 @@ document.addEventListener('DOMContentLoaded', function() {
 // ADMIN FORM HANDLERS
 // ============================================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Add Activity
     const addActivityForm = document.getElementById('addActivityForm');
     const activitiesList = document.getElementById('activitiesList');
 
-    addActivityForm?.addEventListener('submit', function(e) {
+    addActivityForm?.addEventListener('submit', function (e) {
         e.preventDefault();
 
         const title = document.getElementById('actTitle').value;
@@ -205,8 +193,9 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
 
             // Add delete functionality
-            listItem.querySelector('.delete-btn').addEventListener('click', function() {
-                if (confirm('هل تريد حذف هذا النشاط؟')) {
+            listItem.querySelector('.delete-btn').addEventListener('click', async function () {
+                const confirmed = await ConfirmDialog.show('حذف النشاط', 'هل تريد حذف هذا النشاط؟', 'حذف', 'danger');
+                if (confirmed) {
                     listItem.remove();
                 }
             });
@@ -221,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const addAnnouncementForm = document.getElementById('addAnnouncementForm');
     const announcementsList = document.getElementById('announcementsList');
 
-    addAnnouncementForm?.addEventListener('submit', function(e) {
+    addAnnouncementForm?.addEventListener('submit', function (e) {
         e.preventDefault();
 
         const title = document.getElementById('annTitle').value;
@@ -241,8 +230,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
 
-            listItem.querySelector('.delete-btn').addEventListener('click', function() {
-                if (confirm('هل تريد حذف هذا الإعلان؟')) {
+            listItem.querySelector('.delete-btn').addEventListener('click', async function () {
+                const confirmed = await ConfirmDialog.show('حذف الإعلان', 'هل تريد حذف هذا الإعلان؟', 'حذف', 'danger');
+                if (confirmed) {
                     listItem.remove();
                 }
             });
@@ -257,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const addMemoForm = document.getElementById('addMemoForm');
     const memosList = document.getElementById('memosList');
 
-    addMemoForm?.addEventListener('submit', function(e) {
+    addMemoForm?.addEventListener('submit', function (e) {
         e.preventDefault();
 
         const title = document.getElementById('memoTitle').value;
@@ -277,8 +267,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
 
-            listItem.querySelector('.delete-btn').addEventListener('click', function() {
-                if (confirm('هل تريد حذف هذه المذكرة؟')) {
+            listItem.querySelector('.delete-btn').addEventListener('click', async function () {
+                const confirmed = await ConfirmDialog.show('حذف المذكرة', 'هل تريد حذف هذه المذكرة؟', 'حذف', 'danger');
+                if (confirmed) {
                     listItem.remove();
                 }
             });
@@ -293,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const addHolidayForm = document.getElementById('addHolidayForm');
     const holidaysList = document.getElementById('holidaysList');
 
-    addHolidayForm?.addEventListener('submit', function(e) {
+    addHolidayForm?.addEventListener('submit', function (e) {
         e.preventDefault();
 
         const name = document.getElementById('holName').value;
@@ -309,12 +300,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="item-actions">
                     <button class="edit-btn">✏️ تعديل</button>
-                    <button class<div class="delete-btn">🗑️ حذف</button>
+                    <button class="delete-btn">🗑️ حذف</button>
                 </div>
             `;
 
-            listItem.querySelector('.delete-btn').addEventListener('click', function() {
-                if (confirm('هل تريد حذف هذه العطلة؟')) {
+            listItem.querySelector('.delete-btn').addEventListener('click', async function () {
+                const confirmed = await ConfirmDialog.show('حذف العطلة', 'هل تريد حذف هذه العطلة؟', 'حذف', 'danger');
+                if (confirmed) {
                     listItem.remove();
                 }
             });
@@ -329,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const addGalleryForm = document.getElementById('addGalleryForm');
     const galleryList = document.getElementById('galleryList');
 
-    addGalleryForm?.addEventListener('submit', function(e) {
+    addGalleryForm?.addEventListener('submit', function (e) {
         e.preventDefault();
 
         const title = document.getElementById('galTitle').value;
@@ -347,8 +339,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
 
-            listItem.querySelector('.delete-btn').addEventListener('click', function() {
-                if (confirm('هل تريد حذف هذه الصورة؟')) {
+            listItem.querySelector('.delete-btn').addEventListener('click', async function () {
+                const confirmed = await ConfirmDialog.show('حذف الصورة', 'هل تريد حذف هذه الصورة؟', 'حذف', 'danger');
+                if (confirmed) {
                     listItem.remove();
                 }
             });
@@ -363,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const addEventForm = document.getElementById('addEventForm');
     const eventsList = document.getElementById('eventsList');
 
-    addEventForm?.addEventListener('submit', function(e) {
+    addEventForm?.addEventListener('submit', function (e) {
         e.preventDefault();
 
         const title = document.getElementById('evtTitle').value;
@@ -384,8 +377,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
 
-            listItem.querySelector('.delete-btn').addEventListener('click', function() {
-                if (confirm('هل تريد حذف هذا الحدث؟')) {
+            listItem.querySelector('.delete-btn').addEventListener('click', async function () {
+                const confirmed = await ConfirmDialog.show('حذف الحدث', 'هل تريد حذف هذا الحدث؟', 'حذف', 'danger');
+                if (confirmed) {
                     listItem.remove();
                 }
             });
@@ -401,12 +395,12 @@ document.addEventListener('DOMContentLoaded', function() {
 // SMOOTH SCROLL & ANIMATIONS
 // ============================================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Update last updated timestamp
     const lastUpdatedSpan = document.getElementById('lastUpdated');
     if (lastUpdatedSpan) {
         const today = new Date();
-        const dateString = today.toLocaleDateString('ar-EG', {
+        const dateString = today.toLocaleDateString('ar-EG-u-nu-latn', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
@@ -420,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
         rootMargin: '0px 0px -100px 0px'
     };
 
-    const observer = new IntersectionObserver(function(entries) {
+    const observer = new IntersectionObserver(function (entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
@@ -442,13 +436,16 @@ document.addEventListener('DOMContentLoaded', function() {
 // ADMIN PANEL DELETE HANDLERS
 // ============================================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Delegate delete button handlers
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', async function (e) {
         if (e.target.classList.contains('delete-btn')) {
             const listItem = e.target.closest('.list-item, .gallery-admin-item');
-            if (listItem && confirm('هل تريد حذف هذا العنصر؟')) {
-                listItem.remove();
+            if (listItem) {
+                const confirmed = await ConfirmDialog.show('حذف العنصر', 'هل تريد حذف هذا العنصر؟', 'حذف', 'danger');
+                if (confirmed) {
+                    listItem.remove();
+                }
             }
         }
 
@@ -462,7 +459,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // INITIALIZE TOOLTIPS & HELPERS
 // ============================================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Log app initialization
     console.log('🎓 موقع ثانوية صلاح الدين الأيوبي - تم التحميل بنجاح');
     console.log('📧 للدخول إلى لوحة الإدارة: admin / admin123');

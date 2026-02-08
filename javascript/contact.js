@@ -3,7 +3,7 @@
 // Handles contact form submission and validation
 // ============================================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeContactPage();
 });
 
@@ -22,16 +22,6 @@ function setupEventListeners() {
     if (contactForm) {
         contactForm.addEventListener('submit', handleContactFormSubmit);
     }
-    
-    // Mobile menu toggle
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navMenu = document.querySelector('.nav-menu');
-    
-    if (menuToggle) {
-        menuToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-    }
 }
 
 /**
@@ -40,14 +30,14 @@ function setupEventListeners() {
  */
 async function handleContactFormSubmit(e) {
     e.preventDefault();
-    
+
     // Get form values
     const name = document.getElementById('contactName')?.value.trim() || '';
     const email = document.getElementById('contactEmail')?.value.trim() || '';
     const phone = document.getElementById('contactPhone')?.value.trim() || '';
     const subject = document.getElementById('contactSubject')?.value.trim() || '';
     const message = document.getElementById('contactMessage')?.value.trim() || '';
-    
+
     // Validate form using ValidationUtils
     const rules = {
         name: {
@@ -87,7 +77,7 @@ async function handleContactFormSubmit(e) {
         displayValidationErrors(errors);
         return;
     }
-    
+
     await submitContactForm(e.target, { name, email, phone, subject, message });
 }
 
@@ -104,25 +94,25 @@ async function submitContactForm(form, contactData) {
         // Show loading state
         submitBtn.disabled = true;
         submitBtn.textContent = 'جاري الإرسال...';
-        
+
         // Check if API is available
         if (typeof API === 'undefined' || !API.contacts) {
             throw new Error('نظام الرسائل غير متاح في الوقت الحالي');
         }
-        
+
         // Save to Supabase
         const result = await API.contacts.create(contactData);
-        
+
         if (result) {
             // Show success message
             new Toast('تم إرسال الرسالة بنجاح! سنتواصل معك قريباً.', 'success');
-            
+
             // Reset form
             form.reset();
         } else {
             throw new Error('لم يتم حفظ الرسالة');
         }
-        
+
     } catch (error) {
         console.error('Error submitting contact form:', error);
         const errorMessage = error.message || AppConfig.getErrorMessage('networkError');
@@ -163,41 +153,41 @@ function displayValidationErrors(errors) {
  */
 function validateForm(name, email, phone, subject, message) {
     const messageContainer = document.getElementById('formMessage');
-    
+
     // Clear previous message
     messageContainer.innerHTML = '';
-    
+
     // Name validation
     if (!name || name.length < 2) {
         showErrorMessage('يرجى إدخال الاسم بشكل صحيح', messageContainer);
         return false;
     }
-    
+
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         showErrorMessage('يرجى إدخال بريد إلكتروني صحيح', messageContainer);
         return false;
     }
-    
+
     // Phone validation (optional, but if provided should be valid)
     if (phone && !/^\d{10,}$/.test(phone.replace(/\s/g, ''))) {
         showErrorMessage('يرجى إدخال رقم هاتف صحيح', messageContainer);
         return false;
     }
-    
+
     // Subject validation
     if (!subject || subject.length < 3) {
         showErrorMessage('يرجى إدخال الموضوع بشكل صحيح', messageContainer);
         return false;
     }
-    
+
     // Message validation
     if (!message || message.length < 10) {
         showErrorMessage('يرجى إدخال الرسالة بشكل صحيح (10 أحرف على الأقل)', messageContainer);
         return false;
     }
-    
+
     return true;
 }
 
@@ -211,12 +201,12 @@ function showErrorMessage(message, container) {
 function showSuccessMessage() {
     const messageContainer = document.getElementById('formMessage');
     messageContainer.innerHTML = '';
-    
+
     const messageDiv = document.createElement('div');
     messageDiv.className = 'form-message success';
     messageDiv.textContent = '✓ تم إرسال الرسالة بنجاح! سنتواصل معك قريباً.';
     messageContainer.appendChild(messageDiv);
-    
+
     // Auto-hide after 5 seconds
     setTimeout(() => {
         if (messageContainer.contains(messageDiv)) {

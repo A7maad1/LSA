@@ -19,7 +19,7 @@ class EmailNotifications {
             // Call email API (you need to set this up on your backend)
             // Option 1: Supabase Edge Functions
             // Option 2: External service like SendGrid, Mailgun, etc.
-            
+
             const emailPayload = {
                 to: 'admin@school.com', // School admin email
                 subject: `رسالة تواصل جديدة من ${contactData.name}`,
@@ -30,13 +30,13 @@ class EmailNotifications {
                     phone: contactData.phone,
                     subject: contactData.subject,
                     message: contactData.message,
-                    timestamp: new Date().toLocaleString('ar-EG')
+                    timestamp: new Date().toLocaleString('ar-EG-u-nu-latn')
                 }
             };
 
             // This would be called on your backend
             // await this.sendEmail(emailPayload);
-            
+
             console.log('Email notification queued:', emailPayload);
             return true;
 
@@ -60,7 +60,7 @@ class EmailNotifications {
                     last_name: requestData.last_name,
                     massar_number: requestData.massar_number,
                     status: requestData.status,
-                    timestamp: new Date().toLocaleString('ar-EG')
+                    timestamp: new Date().toLocaleString('ar-EG-u-nu-latn')
                 }
             };
 
@@ -83,7 +83,7 @@ class EmailNotifications {
                 subject: subject,
                 type: 'bulk',
                 content: content,
-                timestamp: new Date().toLocaleString('ar-EG')
+                timestamp: new Date().toLocaleString('ar-EG-u-nu-latn')
             };
 
             console.log('Bulk email queued:', emailPayload);

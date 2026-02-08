@@ -2,23 +2,20 @@
 // APP.JS - HOME PAGE FUNCTIONALITY
 // ============================================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeApp();
 });
 
 async function initializeApp() {
     // Load latest activities
     loadLatestActivities();
-    
+
     // Load latest announcements
     loadLatestAnnouncements();
-    
+
     // Load gallery images
     loadGallery();
-    
-    // Setup navigation
-    setupNavigation();
-    
+
     // Setup CTA button
     setupCTAButton();
 }
@@ -42,24 +39,24 @@ function showActivitySkeleton(container) {
 
 async function loadLatestActivities() {
     const container = document.getElementById('activitiesGrid');
-    
+
     if (!container) {
         console.warn('Activities container not found');
         return;
     }
-    
+
     // Show skeleton loading
     showActivitySkeleton(container);
-    
+
     try {
         const activities = await API.activities.getAll();
         const latest = activities.slice(0, 4);
-        
+
         if (latest.length === 0) {
             container.innerHTML = '<p class="empty-message">لا توجد أنشطة حالياً</p>';
             return;
         }
-        
+
         container.innerHTML = latest.map(activity => {
             const gradients = [
                 'linear-gradient(135deg, #1A73E8 0%, #2ECC71 100%)',
@@ -67,7 +64,7 @@ async function loadLatestActivities() {
                 'linear-gradient(135deg, #F5A623 0%, #1A73E8 100%)'
             ];
             const gradient = gradients[Math.floor(Math.random() * gradients.length)];
-            
+
             return `
                 <div class="activity-card">
                     <div class="activity-image" style="background: ${activity.image_url ? 'none' : gradient};">
@@ -77,7 +74,7 @@ async function loadLatestActivities() {
                         <h3>${activity.title}</h3>
                         <p class="activity-date">📅 ${formatDate(activity.date)}</p>
                         <p class="activity-description">${truncateText(activity.description, 100)}</p>
-                        <button class="read-more-btn">اقرأ المزيد →</button>
+                        <a href="activities.html" class="read-more-btn">اقرأ المزيد →</a>
                     </div>
                 </div>
             `;
@@ -106,50 +103,83 @@ function showMemoSkeleton(container) {
 }
 
 async function loadLatestAnnouncements() {
-    const container = document.getElementById('memosList');
-    
-    if (!container) {
-        console.warn('Announcements container not found');
-        return;
-    }
-    
-    // Show skeleton loading
-    showMemoSkeleton(container);
-    
+    const listContainers = {
+        'عام': document.getElementById('announcementsList'),
+        'امتحانات': document.getElementById('examsList'),
+        'مسابقات': document.getElementById('competitionsList'),
+        'مذكرات وزارية': document.getElementById('ministryList')
+    };
+
     try {
         const announcements = await API.announcements.getAll();
-        const latest = announcements.slice(0, 4);
-        
-        if (latest.length === 0) {
-            container.innerHTML = '<p class="empty-message">لا توجد إعلانات حالياً</p>';
-            return;
-        }
-        
+
+        // Group by category
+        const grouped = {
+            'عام': [],
+            'امتحانات': [],
+            'مسابقات': [],
+            'مذكرات وزارية': []
+        };
+
+        announcements.forEach(ann => {
+            if (grouped[ann.category]) {
+                grouped[ann.category].push(ann);
+            } else {
+                grouped['عام'].push(ann);
+            }
+        });
+
         const iconMap = {
             'امتحانات': '📄',
-            'ministry': '📋',
-            'competitions': '🏆',
             'مسابقات': '🏆',
-            'مذكرات وزارية': '📋'
+            'مذكرات وزارية': '📋',
+            'عام': '📢'
         };
-        
-        container.innerHTML = latest.map(ann => {
-            const icon = iconMap[ann.category] || '📢';
-            return `
-                <div class="memo-card">
-                    <div class="memo-icon">${icon}</div>
-                    <div class="memo-content">
-                        <h3>${ann.title}</h3>
-                        <p>تاريخ الإصدار: ${formatDate(ann.created_at)}</p>
-                        <p class="memo-description">${truncateText(ann.content, 120)}</p>
-                        ${ann.file_url ? `<a href="${ann.file_url}" target="_blank" class="download-btn">📄 تحميل PDF</a>` : ''}
+
+        // Render each category
+        Object.keys(listContainers).forEach(category => {
+            const container = listContainers[category];
+            if (!container) return;
+
+            const items = grouped[category].slice(0, 4); // Limit to 4 items per section
+
+            if (items.length === 0) {
+                container.innerHTML = `<p class="empty-message">لا توجد ${category} حالياً</p>`;
+                return;
+            }
+
+            container.innerHTML = items.map(ann => {
+                const icon = iconMap[ann.category] || '📢';
+                const pageMap = {
+                    'عام': 'announcements.html',
+                    'امتحانات': 'exams.html',
+                    'مسابقات': 'competitions.html',
+                    'مذكرات وزارية': 'memos.html'
+                };
+                const targetPage = pageMap[ann.category] || 'announcements.html';
+
+                return `
+                    <div class="memo-card" data-category="${ann.category}">
+                        <div class="memo-icon">${icon}</div>
+                        <div class="memo-content">
+                            <h3>${ann.title}</h3>
+                            <p>تاريخ الإصدار: ${formatDate(ann.created_at)}</p>
+                            <p class="memo-description">${truncateText(ann.content, 120)}</p>
+                            <div class="memo-footer" style="display: flex; gap: 10px; margin-top: 15px;">
+                                <a href="${targetPage}" class="read-more-btn">اقرأ المزيد →</a>
+                                ${ann.file_url ? `<a href="${ann.file_url}" target="_blank" class="download-btn">📄 PDF</a>` : ''}
+                            </div>
+                        </div>
                     </div>
-                </div>
-            `;
-        }).join('');
+                `;
+            }).join('');
+        });
+
     } catch (error) {
         console.error('Error loading announcements:', error);
-        container.innerHTML = '<p class="error-message">خطأ في تحميل الإعلانات</p>';
+        Object.values(listContainers).forEach(container => {
+            if (container) container.innerHTML = '<p class="error-message">خطأ في تحميل البيانات</p>';
+        });
     }
 }
 
@@ -158,52 +188,58 @@ async function loadLatestAnnouncements() {
 // ============================================
 
 async function loadGallery() {
-    const container = document.getElementById('galleryGrid');
-    
-    if (!container) {
-        console.warn('Gallery container not found');
+    const galleryGrid = document.getElementById('galleryGrid');
+    const homeGalleryGrid = document.getElementById('homeGalleryGrid');
+
+    if (!galleryGrid && !homeGalleryGrid) {
+        // console.warn('Gallery container not found');
         return;
     }
-    
+
     try {
         const galleryItems = await API.gallery.getAll();
-        
+
         if (galleryItems.length === 0) {
             console.log('No gallery items found, keeping default placeholders');
             return;
         }
-        
-        // Use gallery manager to handle rendering, lightbox, etc.
-        if (galleryManager) {
+
+        // If on full gallery page
+        if (galleryGrid && galleryManager) {
             galleryManager.setGalleryItems(galleryItems);
+            console.log('Full gallery loaded:', galleryItems.length, 'items');
         }
-        
-        console.log('Gallery loaded successfully:', galleryItems.length, 'items');
+
+        // If on home page
+        if (homeGalleryGrid) {
+            const latest = galleryItems.slice(0, 4);
+            homeGalleryGrid.innerHTML = latest.map((item, index) => `
+                <div class="gallery-item" data-index="${index}" style="cursor: pointer;" tabindex="0" role="button" aria-label="انقر لفتح ${item.title}">
+                    <img 
+                        src="${item.image_url}" 
+                        alt="${item.title}"
+                        loading="lazy"
+                        style="width: 100%; height: 100%; object-fit: cover;"
+                    />
+                    <div class="gallery-overlay">
+                        <p>${item.title}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Attach lightbox functionality if galleryManager is available
+            if (galleryManager) {
+                // Initialize gallery items in manager for lightbox context
+                galleryManager.galleryItems = latest;
+                galleryManager.filteredItems = latest;
+                galleryManager.attachLightboxListener(homeGalleryGrid);
+            }
+            console.log('Home gallery loaded:', latest.length, 'items');
+        }
+
     } catch (error) {
         console.error('Error loading gallery:', error);
         // Keep default placeholders if there's an error
-    }
-}
-
-// ============================================
-// NAVIGATION SETUP
-// ============================================
-
-function setupNavigation() {
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navMenu = document.querySelector('.nav-menu');
-    
-    if (menuToggle && navMenu) {
-        menuToggle.addEventListener('click', function() {
-            navMenu.classList.toggle('show');
-        });
-        
-        // Close menu when clicking on a link
-        navMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('show');
-            });
-        });
     }
 }
 
@@ -214,8 +250,11 @@ function setupNavigation() {
 function setupCTAButton() {
     const ctaButton = document.querySelector('.cta-button');
     if (ctaButton) {
-        ctaButton.addEventListener('click', function() {
-            document.querySelector('.latest-activities').scrollIntoView({ behavior: 'smooth' });
+        ctaButton.addEventListener('click', function () {
+            const section = document.getElementById('activities');
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
         });
     }
 }
@@ -226,7 +265,7 @@ function setupCTAButton() {
 
 function formatDate(dateString) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('ar-EG', options);
+    return new Date(dateString).toLocaleDateString('ar-EG-u-nu-latn', options);
 }
 
 function truncateText(text, length) {

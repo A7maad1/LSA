@@ -14,11 +14,11 @@ class SecureSupabaseClient {
                 window[key]
             );
         };
-        
+
         this.url = getEnv('VITE_SUPABASE_URL') || 'https://urcorksxlreocdjdnatw.supabase.co';
         this.anonKey = getEnv('VITE_SUPABASE_ANON_KEY') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyY29ya3N4bHJlb2NkamRuYXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM0ODMxOTksImV4cCI6MjA3OTA1OTE5OX0.9s2ScvRseIQk8hy8pNhHAsl9jOOUXLUuKQE_dyEjneA';
         this.timeout = getEnv('VITE_API_TIMEOUT') || 30000;
-        
+
         if (!this.url || !this.anonKey) {
             console.error('❌ Supabase environment variables not configured');
         }
@@ -604,9 +604,11 @@ const storageAPI = {
             }
 
             // Validate file size (max 10MB)
-            const maxSize = 10 * 1024 * 1024;
+            // Validate file size (max 50MB or from config)
+            const maxSize = window.AppConfig?.upload?.maxFileSize || (50 * 1024 * 1024);
             if (file.size > maxSize) {
-                throw new Error('File size exceeds 10MB limit');
+                const sizeMB = Math.round(maxSize / (1024 * 1024));
+                throw new Error(`File size exceeds ${sizeMB}MB limit`);
             }
 
             // Generate unique filename
@@ -617,9 +619,6 @@ const storageAPI = {
             const filePath = `${bucket}/${fileName}`;
 
             // Upload file using REST API
-            const formData = new FormData();
-            formData.append('file', file);
-
             const response = await fetch(
                 `${supabaseClient.url}/storage/v1/object/${bucket}/${fileName}`,
                 {
@@ -639,7 +638,7 @@ const storageAPI = {
 
             // Generate public URL
             const publicUrl = `${supabaseClient.url}/storage/v1/object/public/${bucket}/${fileName}`;
-            
+
             console.log('File uploaded successfully:', {
                 fileName: fileName,
                 bucket: bucket,
@@ -657,6 +656,17 @@ const storageAPI = {
             supabaseClient.logError('Error uploading file', error);
             throw error;
         }
+    },
+
+    /**
+     * Upload image specifically (helper for uploadFile)
+     * @param {File} file - Image file
+     * @param {string} bucket - Bucket name
+     * @returns {Promise<string>} Public URL of uploaded image
+     */
+    async uploadImage(file, bucket = 'gallery') {
+        const result = await this.uploadFile(file, bucket);
+        return result.publicUrl;
     },
 
     /**
@@ -832,3 +842,5 @@ const API = {
 // Export for global access
 window.API = API;
 window.supabaseClient = supabaseClient;
+window.storageAPI = storageAPI; // Ensure storageAPI is global for dashboard.js
+window.authAPI = authAPI;
