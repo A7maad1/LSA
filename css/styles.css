@@ -2535,3 +2535,249 @@ html[dir="rtl"] .toast.show {
         font-size: 13px;
     }
 }
+
+/* ============================================
+   GLOBAL RESPONSIVE DESIGN
+   ============================================ */
+
+/* TABLET BREAKPOINT (1024px and below) */
+@media (max-width: 1024px) {
+    .header-container {
+        padding: 0 15px;
+        gap: 15px;
+    }
+
+    .navbar {
+        gap: 15px;
+    }
+
+    .nav-menu {
+        gap: 10px;
+    }
+
+    .nav-menu a {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+
+    .section-title {
+        font-size: 36px;
+    }
+
+    .hero h1 {
+        font-size: 40px;
+    }
+
+    .hero p {
+        font-size: 20px;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* MOBILE BREAKPOINT (768px and below) */
+@media (max-width: 768px) {
+    .header {
+        padding: 5px 0;
+    }
+
+    .header-container {
+        padding: 0 15px;
+    }
+
+    .navbar {
+        width: 100%;
+        justify-content: space-between !important;
+        flex-direction: row-reverse !important;
+        /* Forces toggle on one side, logo on other */
+        gap: 0;
+    }
+
+    .menu-toggle {
+        display: flex;
+        order: 1;
+        /* Toggle on relative "right" in RTL */
+    }
+
+    .ministry-logo {
+        order: 2;
+        /* Logo on relative "left" in RTL */
+        margin: 0 !important;
+    }
+
+    .ministry-logo img {
+        width: 45px;
+        height: 45px;
+    }
+
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        position: fixed;
+        top: 65px;
+        /* Adjusted for smaller header */
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--white);
+        padding: 20px 0;
+        gap: 0;
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        overflow-y: auto;
+        animation: slideInNav 0.3s ease;
+    }
+
+    @keyframes slideInNav {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .nav-menu.show {
+        display: flex;
+    }
+
+    .nav-menu li {
+        width: 100%;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .nav-menu a {
+        display: block;
+        padding: 15px 25px;
+        text-align: right;
+        font-size: 16px;
+        border-radius: 0;
+        color: var(--text-color);
+    }
+
+    .nav-menu a.active {
+        color: var(--primary-blue);
+        background-color: var(--light-gray);
+    }
+
+    .nav-menu .admin-btn {
+        margin: 15px 25px;
+        text-align: center;
+        border-radius: 8px;
+    }
+
+    .hero {
+        padding: 60px 20px;
+        min-height: 350px;
+    }
+
+    .hero h1 {
+        font-size: 28px;
+        margin-bottom: 15px;
+    }
+
+    .hero p {
+        font-size: 18px;
+    }
+
+    .hero .tagline {
+        font-size: 15px;
+    }
+
+    .hero-btns {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+        max-width: 320px;
+        margin: 30px auto 0;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+        width: 100%;
+        font-size: 16px;
+        padding: 12px 25px;
+    }
+
+    .section {
+        padding: 40px 0;
+    }
+
+    .section-title {
+        font-size: 26px;
+        margin-bottom: 35px;
+    }
+
+    .memos-list {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .memo-item,
+    .memo-card {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .activities-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .gallery-item {
+        aspect-ratio: 1;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+    }
+
+    .footer-section h3::after {
+        left: 50%;
+        transform: translateX(50%);
+        right: auto;
+    }
+}
+
+/* SMALL MOBILE BREAKPOINT (480px and below) */
+@media (max-width: 480px) {
+    .header-container {
+        padding: 0 10px;
+    }
+
+    .hero h1 {
+        font-size: 26px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .certificate-form-wrapper {
+        padding: 25px 20px;
+    }
+
+    .section {
+        padding: 50px 0;
+    }
+}
