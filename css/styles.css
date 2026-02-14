@@ -25,6 +25,16 @@
     --shadow-premium: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
+html,
+body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    position: relative;
+    max-width: 100%;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -2742,6 +2752,7 @@ html[dir="rtl"] .toast.show {
         grid-template-columns: 1fr;
         gap: 40px;
         text-align: center;
+        padding: 0 20px;
     }
 
     .footer-section h3::after {

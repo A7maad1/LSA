@@ -25,7 +25,7 @@ class AccessibilityManager {
         // Images should have alt text (checked in HTML)
         // Buttons should have aria-label or visible text
         // Links should be descriptive
-        
+
         // Gallery items
         document.querySelectorAll('.gallery-item').forEach((item, index) => {
             if (!item.getAttribute('aria-label')) {
@@ -181,10 +181,14 @@ class AccessibilityManager {
             liveRegion.setAttribute('aria-live', 'polite');
             liveRegion.setAttribute('aria-atomic', 'true');
             liveRegion.style.position = 'absolute';
-            liveRegion.style.left = '-10000px';
             liveRegion.style.width = '1px';
             liveRegion.style.height = '1px';
+            liveRegion.style.padding = '0';
+            liveRegion.style.margin = '-1px';
             liveRegion.style.overflow = 'hidden';
+            liveRegion.style.clip = 'rect(0, 0, 0, 0)';
+            liveRegion.style.whiteSpace = 'nowrap';
+            liveRegion.style.border = '0';
             liveRegion.id = 'live-region';
             document.body.appendChild(liveRegion);
         }
@@ -356,7 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
     AccessibilityManager.init();
     AccessibilityManager.respectReducedMotion();
     AccessibilityManager.improveReadability();
-    
+
     // Uncomment to add text size controls
     // AccessibilityManager.addTextSizeControls();
 });
