@@ -28,22 +28,22 @@ const AppConfig = {
     // ============================================
     colors: {
         primary: {
-            blue: '#1A73E8',
-            green: '#2ECC71'
+            blue: '#2563EB',
+            green: '#10B981'
         },
         neutral: {
             white: '#FFFFFF',
-            lightGray: '#F5F5F5',
-            darkGray: '#333333',
-            textColor: '#444444',
-            borderColor: '#DDDDDD'
+            lightGray: '#F3F4F6',
+            darkGray: '#1F2937',
+            textColor: '#374151',
+            borderColor: '#E5E7EB'
         },
         status: {
-            success: '#27AE60',
-            error: '#E74C3C',
-            warning: '#F39C12',
-            info: '#3498DB',
-            pending: '#95A5A6'
+            success: '#10B981',
+            error: '#EF4444',
+            warning: '#F59E0B',
+            info: '#3B82F6',
+            pending: '#9CA3AF'
         }
     },
 
