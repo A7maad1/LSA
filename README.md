@@ -12,7 +12,7 @@ A modern, fully-featured school management website built with Vanilla JavaScript
 - ✅ **Activities Management** - Display school activities and events
 - ✅ **Announcements** - Share important notices and memos
 - ✅ **Gallery** - Full-featured image gallery with lightbox viewer
-- ✅ **Certificates** - Online certificate request submission
+- ✅ **Certificates** - Online certificate request submission (via Google Forms)
 - ✅ **Contact Form** - Direct messaging system
 - ✅ **Meetings** - Schedule and display school meetings
 - ✅ **Holidays** - Calendar of school holidays
@@ -20,7 +20,7 @@ A modern, fully-featured school management website built with Vanilla JavaScript
 ### Admin Dashboard
 - ✅ **Content Management** - Create, edit, delete all content
 - ✅ **Image Management** - Upload and manage gallery images
-- ✅ **Certificate Requests** - View and manage student requests
+- ✅ **Certificate Requests** - Redirect students to Google Forms for requests
 - ✅ **Contact Messages** - View and manage inquiries
 - ✅ **User Management** - Handle admin accounts
 
@@ -90,7 +90,7 @@ LSA/
 │   ├── dashboard.js                   # Admin panel logic
 │   ├── gallery-manager.js             # Gallery & lightbox
 │   ├── contact.js                     # Contact form
-│   ├── certificates.js                # Certificate requests
+│   ├── [Removed]                      # Certificates now uses Google Forms
 │   └── [other modules]
 ├── 📁 css/
 │   ├── styles.css                     # Main styles

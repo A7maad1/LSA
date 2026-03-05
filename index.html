@@ -15,7 +15,7 @@
     <script src="javascript/email-notifications.js" defer></script>
     <script src="javascript/accessibility.js" defer></script>
     <script src="javascript/app.js" defer></script>
-    <script src="javascript/certificates.js" defer></script>
+
     <script src="javascript/navbar.js" defer></script>
     <script src="javascript/script.js" defer></script>
 </head>
@@ -206,52 +206,15 @@
     <!-- SCHOOL CERTIFICATE SUBMISSION SECTION -->
     <section class="certificate-section" id="certificates">
         <div class="container">
-            <h2 class="section-title">الشهادة المدرسية</h2>
+            <h2 class="section-title">طلب شهادة مدرسية</h2>
 
-            <div class="certificate-form-container">
-                <div class="certificate-form-wrapper">
-                    <form id="certificateForm" class="certificate-form">
-                        <div class="form-header">
-                            <h3>طلب شهادة مدرسية</h3>
-                            <p class="form-subtitle">يرجى ملء البيانات المطلوبة بدقة</p>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="certFirstName">الاسم *</label>
-                                <input type="text" id="certFirstName" name="first_name" placeholder="أدخل الاسم الأول"
-                                    required>
-                            </div>
-                            <div class="form-group">
-                                <label for="certLastName">النسب *</label>
-                                <input type="text" id="certLastName" name="last_name" placeholder="أدخل اسم العائلة"
-                                    required>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="certMassarNumber">رقم المسار *</label>
-                                <input type="text" id="certMassarNumber" name="massar_number"
-                                    placeholder="أدخل رقم المسار" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="certDate">السنة الدراسية الحالية أو الأخيرة *</label>
-                                <input type="date" id="certDate" name="submission_date" required>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="certBirthDate">تاريخ الميلاد *</label>
-                                <input type="date" id="certBirthDate" name="birth_date" required>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="submit-btn">إرسال الطلب</button>
-                        <p class="form-message" id="certMessage"></p>
-                    </form>
-                </div>
+            <div class="google-form-container" style="display: flex; justify-content: center; margin-top: 30px;">
+                <iframe
+                    src="https://docs.google.com/forms/d/e/1FAIpQLSdZaXMSJhnXIc45rA_jRDObSjeZWtFkZcGSWhhZ67p7jgloiA/viewform?embedded=true"
+                    width="100%" height="1100" frameborder="0" marginheight="0" marginwidth="0"
+                    style="max-width: 800px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    جاري التحميل...
+                </iframe>
             </div>
         </div>
     </section>
